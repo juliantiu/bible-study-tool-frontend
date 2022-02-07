@@ -1,0 +1,25 @@
+import { createContext, ReactNode } from "react";
+
+interface ISomeContext {
+
+}
+
+export const SomeContext = createContext<ISomeContext>({
+
+});
+
+interface SomeContextProviderProps {
+  children: ReactNode;
+}
+
+export function SomeContextProvider({ children }: SomeContextProviderProps) {
+  return (
+    <SomeContext.Provider
+      value={{
+
+      }}
+    >
+      {children}
+    </SomeContext.Provider>
+  );
+}
