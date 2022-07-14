@@ -6,12 +6,23 @@ import Footer from './components/Footer';
 import { BackendConnectionContextProvider } from './contexts/backend-connection';
 import { BibleReaderContextProvider } from './contexts/bible-reader';
 import { GlobalFeaturesConfigurationContextProvider } from './contexts/gloabl-features-confirguration';
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 
 function Layout() {
   return (
     <>
       <Container fluid>
-        
+        <Routes>
+          <Route path="read" element={<h1>read</h1>}/>
+          <Route path="notes" element={<h1>notes</h1>}/>
+          <Route path="search" element={<h1>search</h1>}/>
+          <Route path="settings" element={<h1>settings</h1>}/>
+        </Routes>
       </Container>
       <Footer />
     </>
@@ -20,7 +31,9 @@ function Layout() {
 
 function Routing() {
   return (
-    <Layout />
+    <Router>
+      <Layout />
+    </Router>
   );
 }
 
