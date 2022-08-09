@@ -5,28 +5,31 @@ export default function Footer() {
   return (
     <Container fluid className="App-footer">
       <Row>
-        <Col xs={2}>
+        {/* <Col xs={2}>
           <Button className="float-start">{'<'}</Button>
-        </Col>
-        <Col xs={8}>
+        </Col> */}
+        <Col xs={12}>
           <Row className="text-center">
-            <Col xs={3}>
+            <Col xs={4}>
               <Button>Read</Button>
             </Col>
-            <Col xs={3}>
+            {/* <Col xs={3}>
               <Button>Notes</Button>
-            </Col>
-            <Col xs={3}>
+            </Col> */}
+            <Col xs={4}>
               <Button>Search</Button>
             </Col>
-            <Col xs={3}>
-              <Button>Settings</Button>
+            <Col xs={4}>
+              <Button>Memorize</Button>
             </Col>
+            {/* <Col xs={3}>
+              <Button>Settings</Button>
+            </Col> */}
           </Row>
         </Col>
-        <Col xs={2}>
+        {/* <Col xs={2}>
           <Button className="float-end">{'>'}</Button>
-        </Col>
+        </Col> */}
       </Row>
     </Container>
   );

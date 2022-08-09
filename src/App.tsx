@@ -19,9 +19,10 @@ function Layout() {
       <Container fluid>
         <Routes>
           <Route path="read" element={<h1>read</h1>}/>
-          <Route path="notes" element={<h1>notes</h1>}/>
+          {/* <Route path="notes" element={<h1>notes</h1>}/> */}
           <Route path="search" element={<h1>search</h1>}/>
-          <Route path="settings" element={<h1>settings</h1>}/>
+          {/* <Route path="settings" element={<h1>settings</h1>}/> */}
+          <Route path="memorize" element={<h1>memorize</h1>}/>
         </Routes>
       </Container>
       <Footer />
