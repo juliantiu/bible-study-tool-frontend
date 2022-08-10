@@ -14,6 +14,8 @@ import {
 } from "react-router-dom";
 
 import Read from './components/Read';
+import useVerseRequester from './hooks/useVerseRequester';
+import { VerseRequesterContextProvider } from './contexts/verse-requester';
 
 
 
@@ -45,7 +47,9 @@ function ContextProviderLayer() {
     <GlobalFeaturesConfigurationContextProvider>
       <BackendConnectionContextProvider>
           <BibleReaderContextProvider>
-            <Routing />
+            <VerseRequesterContextProvider>
+              <Routing />
+            </VerseRequesterContextProvider>
           </BibleReaderContextProvider>
       </BackendConnectionContextProvider>
     </GlobalFeaturesConfigurationContextProvider>
