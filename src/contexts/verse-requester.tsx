@@ -173,8 +173,6 @@ export function VerseRequesterContextProvider({ children }: VerseRequesterContex
     [setBibleContents]
   );
 
-  console.log(bibleContents);
-
   const requestVerses = useCallback(
     (verses: string) => {
 

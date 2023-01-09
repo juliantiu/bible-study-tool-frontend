@@ -4,7 +4,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Container } from 'react-bootstrap';
 import Footer from './components/Footer';
 import { BackendConnectionContextProvider } from './contexts/backend-connection';
-import { BibleReaderContextProvider } from './contexts/bible-reader';
+import { AuthContextProvider } from './contexts/auth';
 import { GlobalFeaturesConfigurationContextProvider } from './contexts/gloabl-features-confirguration';
 import {
   BrowserRouter as Router,
@@ -16,6 +16,7 @@ import {
 import Read from './components/Read';
 import useVerseRequester from './hooks/useVerseRequester';
 import { VerseRequesterContextProvider } from './contexts/verse-requester';
+import { WindowManagerContextProvider } from './contexts/window-manager';
 
 
 
@@ -44,15 +45,17 @@ function Routing() {
 
 function ContextProviderLayer() {
   return (
-    <GlobalFeaturesConfigurationContextProvider>
-      <BackendConnectionContextProvider>
-          <BibleReaderContextProvider>
+    <AuthContextProvider>
+      <GlobalFeaturesConfigurationContextProvider>
+        <BackendConnectionContextProvider>
+          <WindowManagerContextProvider>
             <VerseRequesterContextProvider>
               <Routing />
             </VerseRequesterContextProvider>
-          </BibleReaderContextProvider>
-      </BackendConnectionContextProvider>
-    </GlobalFeaturesConfigurationContextProvider>
+          </WindowManagerContextProvider>
+        </BackendConnectionContextProvider>
+      </GlobalFeaturesConfigurationContextProvider>
+    </AuthContextProvider>
   );
 }
 
