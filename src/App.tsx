@@ -13,6 +13,7 @@ import {
 
 import { VerseRequesterContextProvider } from './contexts/verse-requester';
 import { WindowManagerContextProvider } from './contexts/window-manager';
+import WindowContent from './components/WindowContent';
 
 // function Layout() {
 //   return (
@@ -33,7 +34,7 @@ function Layout() {
   return (
     <>
       <Routes>
-        <Route path="window/:windowType/:windowId" element={<>Hello world</>}>
+        <Route path="window/:windowType/:windowId" element={<WindowContent />}>
         </Route>
       </Routes>
       <Footer />

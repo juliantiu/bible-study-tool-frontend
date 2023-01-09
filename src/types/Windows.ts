@@ -1,6 +1,7 @@
 import { BibleVerse } from "./BibleContents";
 
 export enum WindowType {
+  none = 0,
   read,
   notes,
   search,
