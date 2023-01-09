@@ -1,5 +1,5 @@
 import { Row, Col, Container } from "react-bootstrap";
-import ReadNavbar from "./ReadNavbar";
+import ReadNavbar from "./ReadNavbar"; 
 
 export default function Read() {
   return (

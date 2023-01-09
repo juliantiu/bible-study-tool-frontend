@@ -1,17 +1,29 @@
 import { BibleVerse } from "./BibleContents";
 
-export interface Window { }
+export enum WindowType {
+  read,
+  notes,
+  search,
+  memorize
+}
+
+export interface Window {
+  windowId: number;
+  windowType: WindowType;
+}
 
 export interface ReadWindow extends Window {
-    book: string;
-    chapter: number;
-    verse: number;
+  bookKey: string;
+  bookName: string
+  chapterNumber: number;
+  verseNumber: number;
 }
 
 export interface NotesWindow extends Window {
-  book: string;
-  chapter: number;
-  verse: number;
+  bookKey: string;
+  bookName: string;
+  chapterNumber: number;
+  verseNumber: number;
 }
 
 export interface SearchWindow extends Window {

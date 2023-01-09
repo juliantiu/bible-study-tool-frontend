@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import useGlobalFeaturesConfiguration from "../hooks/useGlobalfeaturesConfiguration";
 
 const keys = [
   'GEN',
@@ -145,11 +146,11 @@ const searchWordToKey = new Map<string, string>([
  ]);
 
 interface IVerseRequesterContext {
-  bibleContents: Map<string, any>
+  bibleContentsMapping: Map<string, any>
 }
 
 export const VerseRequester = createContext<IVerseRequesterContext>({
-  bibleContents: new Map<string, any>()
+  bibleContentsMapping: new Map<string, any>()
 });
 
 interface VerseRequesterContextProviderProps {
@@ -157,21 +158,22 @@ interface VerseRequesterContextProviderProps {
 }
 
 export function VerseRequesterContextProvider({ children }: VerseRequesterContextProviderProps) {
-  const [bibleContents, setBibleContents] = useState<Map<string, any>>(new Map<string, any>());
+  const { bibleContents } = useGlobalFeaturesConfiguration();
+  const [bibleContentsMapping, setBibleContentsMapping] = useState<Map<string, any>>(new Map<string, any>());
 
   useEffect(
     () => {
-      const tempStore = new Map<string, any>();
-      keys.forEach(
-        async (key) => {
-          const bibleBookContent = await (await fetch(`bibles/recovery_version/${key}.json`)).json();
-          tempStore.set(key, bibleBookContent);
-        }
+      const tempStore: Map<string, any> = bibleContents.reduce(
+        (accumulator, bibleContent) => { 
+          accumulator.set(bibleContent.key as any, bibleContent);
+          return accumulator;
+        },
+        new Map<string, any>()
       );
-      setBibleContents(tempStore);
+      setBibleContentsMapping(tempStore);
     },
-    [setBibleContents]
-  );
+    [bibleContents, setBibleContentsMapping]
+  ); 
 
   const requestVerses = useCallback(
     (verses: string) => {
@@ -183,7 +185,7 @@ export function VerseRequesterContextProvider({ children }: VerseRequesterContex
   return (
     <VerseRequester.Provider
       value={{
-        bibleContents
+        bibleContentsMapping
       }}
     >
       {children}
