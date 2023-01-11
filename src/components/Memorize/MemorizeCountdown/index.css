@@ -1,0 +1,16 @@
+#memorize-countdown-container-primary {
+  position: relative;
+  padding-top: 40px;
+  margin-left: -23px;
+}
+
+#memorize-countdown-container-secondary {
+  position: absolute;
+  width: 100%;
+  background-color: #191970;
+  display: flex;
+  align-items: center;
+  height: 150px;
+  border-bottom-left-radius: 25px;
+  color: #FFFFFF;
+}

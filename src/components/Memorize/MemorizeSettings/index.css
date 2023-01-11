@@ -1,0 +1,14 @@
+#memorize-searchbar-container-primary {
+  padding: 40px 0px 10px 0px;
+}
+
+#memorize-searchbar-container-secondary {
+  padding: 15px;
+  background-color: #FFFFFF;
+}
+
+#memorize-difficulty-container {
+  margin-top: -20px;
+  padding: 5px 15px 0px 15px;
+  background-color: #FFFFFF;
+}

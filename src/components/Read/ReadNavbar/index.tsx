@@ -15,7 +15,7 @@ export default function ReadNavbar() {
   }
 
   return (
-    <div id="read-navbar">
+    <div id="window-navbar">
       <div className='navbar-symbol'>
         <h1>&#x1f4d6;</h1>
       </div>

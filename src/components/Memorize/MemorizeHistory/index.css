@@ -1,0 +1,12 @@
+#memorize-history {
+  background-color: #FFFFFF;
+  height: calc(100% - 30px);
+  margin-left: -24px;
+  padding-top: 60px;
+  padding-right: 15px;
+}
+
+#memorize-history-container {
+  height: calc(100% - 15px);
+  border: 1px solid #DDDDDD;
+}

@@ -1,6 +1,13 @@
+#window-navbar {
+  height: 60px;
+  background-color: #191970;
+  color: #FFFFFF;
+  position: relative;
+}
+
 .navbar-symbol {
   position: absolute;
-  bottom: -40px;
+  bottom: -50px;
   left: 46.5%
 }
 

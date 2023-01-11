@@ -1,0 +1,8 @@
+#memorize-content-window {
+  display: flex;
+  flex-direction: column;
+}
+
+#memorize-quiz-window-container {
+  flex: 1;
+}
