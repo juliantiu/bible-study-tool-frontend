@@ -117,14 +117,20 @@ export function GlobalFeaturesConfigurationContextProvider({ children }: GlobalF
         for (const [, key] of bibleBooks) {
           try {
             const folder = generateBibleBookDirPath(language, bibleVersion, key);
-            const importedFile = await import(`../assets/bibles/${folder}`);
+            const importedFile = await (await fetch(`${process.env.PUBLIC_URL}/bibles/${folder}`,
+              { headers : { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+                }
+              }
+            )).json();
             const data: BibleContents = importedFile[key];
             contents.push(data);
           } catch (err) {
             console.error(err);
           }
         }
-        setBibleContents(contents);
+        setBibleContents(contents); 
       }
 
       loadBibleData();
