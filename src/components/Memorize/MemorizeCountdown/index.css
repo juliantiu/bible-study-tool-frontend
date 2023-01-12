@@ -1,16 +1,108 @@
-#memorize-countdown-container-primary {
+#memorize-countdown {
   position: relative;
   padding-top: 40px;
   margin-left: -23px;
 }
 
-#memorize-countdown-container-secondary {
+#memorize-countdown-container-primary {
   position: absolute;
   width: 100%;
   background-color: #191970;
   display: flex;
-  align-items: center;
   height: 150px;
   border-bottom-left-radius: 25px;
   color: #FFFFFF;
+  justify-content: space-between;
+}
+
+#memorize-countdown-container-secondary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  padding: 15px;
+
+  margin: 25px;
+  background-color: #2F2F7E;
+
+  border-bottom-left-radius: 25px;
+
+  box-shadow: -2px 5px 10px .1px;
+}
+
+.memorize-countdown-input {
+  width: 130px;
+  margin: 5px 10px;
+}
+
+#memorize-countdown-timer-display-container {
+  display: flex;
+  justify-content: center;
+}
+
+.memorize-countdown-timer-display-value {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0px 8%;
+}
+
+.memorize-countdown-timer-display-value > span {
+  font-style: italic;
+  font-size: 30px;
+}
+
+.memorize-countdown-timer-display-value > p {
+  font-size: 18px;
+}
+
+#memorize-interface-options-container {
+  display: flex;
+  flex-direction: column;
+}
+
+#memorize-interface-options-container button {
+  height: 50px;
+  width: 50px;
+  border: none;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  box-shadow: -4px 0px 10px -2px #FFFFFF;
+
+  background-color: #2F2F7E;
+  font-size: 20px;
+}
+
+#memorize-interface-options-container button:hover {
+  box-shadow: -4px 0px 10px 1px #FFFFFF;
+}
+
+#memorize-interface-options-container button:active {
+  box-shadow: -4px 0px 10px -2px #FFFFFF;
+}
+
+#memorize-interface-options-container button:nth-of-type(1) {
+  color: green;
+  border-top-left-radius: 10px;
+}
+
+#stop-button {
+  height: 15px;
+  width: 15px;
+  background-color: red;
+}
+
+#memorize-interface-options-container button:nth-of-type(3) {
+  border-bottom-left-radius: 10px;
+  color: yellow;
+}
+
+#memorize-interface-options-container button:disabled {
+  box-shadow: -4px 0px 10px -2px #FFFFFF;
+  color: #DDDDDD;
 }

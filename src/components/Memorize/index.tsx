@@ -1,5 +1,5 @@
 import './index.css';
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Col, Container, Row } from "react-bootstrap";
 import MemorizeNavbar from "./MemorizeNavbar";
 import MemorizeSettings from './MemorizeSettings';
 import MemorizeCountdown from './MemorizeCountdown';
