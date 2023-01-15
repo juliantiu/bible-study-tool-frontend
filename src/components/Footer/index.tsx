@@ -15,7 +15,7 @@ export default function Footer() {
 
   const onWindowNavigateClick = useCallback(
     (window: Window) => {
-      navigation(`/window/${WindowType[window.windowType]}/${window.windowId + 1}`);
+      navigation(`/window/${window.windowId + 1}/${WindowType[window.windowType]}`);
     },
     [navigation]
   );

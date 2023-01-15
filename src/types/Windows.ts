@@ -8,9 +8,17 @@ export enum WindowType {
   memorize
 }
 
+export enum VerseRecipeFlags {
+  oneVerse,
+  dashed,
+  wholeChapter
+}
+
 export interface Window {
   windowId: number;
   windowType: WindowType;
+  language: string;
+  bibleVersion: string;
 }
 
 export interface ReadWindow extends Window {

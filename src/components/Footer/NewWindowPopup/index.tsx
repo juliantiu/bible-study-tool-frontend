@@ -29,7 +29,9 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
   const onAddWindow = () => {
     const newWindow: Window = {
       windowId: numWindows,
-      windowType: windowType
+      windowType: windowType,
+      language: 'eng',
+      bibleVersion: 'recovery_version'
     }
     addWindow(newWindow);
     onClearAndHide();

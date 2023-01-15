@@ -1,6 +1,6 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import { BibleContents } from '../types/BibleContents';
-import { generateBibleBookDirPath } from "../utils/fileSystems";
+import { generateBibleBookDirPath } from "../utils/file-systems-util";
 
 const bibleBooks = [
   ['Genesis', 'GEN',],
@@ -72,7 +72,6 @@ const bibleBooks = [
 ]
 
 interface IGlobalFeaturesConfigurationContext {
-  bibleContents: BibleContents[];
   bibleVersion: string;
   assignBibleVersion: (version: string) => void;
   assignLanguage: (language: string) => void;
@@ -80,7 +79,6 @@ interface IGlobalFeaturesConfigurationContext {
 }
 
 export const GlobalFeaturesConfigurationContext = createContext<IGlobalFeaturesConfigurationContext>({
-  bibleContents: [],
   bibleVersion: 'Recovery Version',
   assignBibleVersion: (version: string) => undefined,
   assignLanguage: (language: string) => undefined,
@@ -94,7 +92,6 @@ interface GlobalFeaturesConfigurationContextProviderProps {
 export function GlobalFeaturesConfigurationContextProvider({ children }: GlobalFeaturesConfigurationContextProviderProps) {
   const [bibleVersion, setBibleVersion] = useState('Recovery Version');
   const [language, setLanguage] = useState('eng');
-  const [bibleContents, setBibleContents] = useState<BibleContents[]>([]);
 
   const assignBibleVersion = useCallback(
     (version: string) => {
@@ -110,40 +107,39 @@ export function GlobalFeaturesConfigurationContextProvider({ children }: GlobalF
     [setLanguage]
   );
 
-  useEffect(
-    () => {
-      const loadBibleData = async () => {
-        const contents: BibleContents[] = [];
-        for (const [, key] of bibleBooks) {
-          try {
-            const folder = generateBibleBookDirPath(language, bibleVersion, key);
-            const importedFile = await (await fetch(`${process.env.PUBLIC_URL}/bibles/${folder}`,
-              { headers : { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-                }
-              }
-            )).json();
-            const data: BibleContents = importedFile[key];
-            contents.push(data);
-          } catch (err) {
-            console.error(err);
-          }
-        }
-        setBibleContents(contents); 
-      }
+  // useEffect(
+  //   () => {
+  //     const loadBibleData = async () => {
+  //       const contents: BibleContents[] = [];
+  //       for (const [, key] of bibleBooks) {
+  //         try {
+  //           const folder = generateBibleBookDirPath(language, bibleVersion, key);
+  //           const importedFile = await (await fetch(`${process.env.PUBLIC_URL}/bibles/${folder}`,
+  //             { headers : { 
+  //               'Content-Type': 'application/json',
+  //               'Accept': 'application/json'
+  //               }
+  //             }
+  //           )).json();
+  //           const data: BibleContents = importedFile[key];
+  //           contents.push(data);
+  //         } catch (err) {
+  //           console.error(err);
+  //         }
+  //       }
+  //       setBibleContents(contents); 
+  //     }
 
-      loadBibleData();
-    },
-    [bibleVersion, language, setBibleContents]
-  );
+  //     loadBibleData();
+  //   },
+  //   [bibleVersion, language]
+  // );
 
   return (
     <GlobalFeaturesConfigurationContext.Provider
       value={{
         assignBibleVersion,
         assignLanguage,
-        bibleContents,
         bibleVersion,
         language,
       }}

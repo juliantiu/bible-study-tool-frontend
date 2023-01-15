@@ -1,5 +1,4 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import useGlobalFeaturesConfiguration from "../hooks/useGlobalfeaturesConfiguration";
 
 const keys = [
   'GEN',
@@ -158,22 +157,21 @@ interface VerseRequesterContextProviderProps {
 }
 
 export function VerseRequesterContextProvider({ children }: VerseRequesterContextProviderProps) {
-  const { bibleContents } = useGlobalFeaturesConfiguration();
   const [bibleContentsMapping, setBibleContentsMapping] = useState<Map<string, any>>(new Map<string, any>());
 
-  useEffect(
-    () => {
-      const tempStore: Map<string, any> = bibleContents.reduce(
-        (accumulator, bibleContent) => { 
-          accumulator.set(bibleContent.key as any, bibleContent);
-          return accumulator;
-        },
-        new Map<string, any>()
-      );
-      setBibleContentsMapping(tempStore);
-    },
-    [bibleContents, setBibleContentsMapping]
-  ); 
+  // useEffect(
+  //   () => {
+  //     const tempStore: Map<string, any> = bibleContents.reduce(
+  //       (accumulator, bibleContent) => { 
+  //         accumulator.set(bibleContent.key as any, bibleContent);
+  //         return accumulator;
+  //       },
+  //       new Map<string, any>()
+  //     );
+  //     setBibleContentsMapping(tempStore);
+  //   },
+  //   [bibleContents, setBibleContentsMapping]
+  // ); 
 
   const requestVerses = useCallback(
     (verses: string) => {

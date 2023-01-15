@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import useGlobalFeaturesConfiguration from "../hooks/useGlobalfeaturesConfiguration";
 import { ReadWindow, Window, WindowType } from '../types/Windows'
 
 interface IWindowManagerContext {
@@ -18,13 +19,17 @@ interface WindowManagerContextProviderProps {
 }
 
 export function WindowManagerContextProvider({ children }: WindowManagerContextProviderProps) {
+  const { language, bibleVersion } = useGlobalFeaturesConfiguration();
   const [windows, setWindows] = useState<Window[]>(
     () => {
       const defaultWindow: ReadWindow = {
+        language,
+        bibleVersion,
         windowId: 0,
+
         windowType: WindowType.read,
-        bookKey: 'default',
-        bookName: 'default',
+        bookKey: 'GEN',
+        bookName: 'Genesis',
         chapterNumber: 1,
         verseNumber: 1
       };

@@ -34,7 +34,7 @@ function Layout() {
   return (
     <>
       <Routes>
-        <Route path="window/:windowType/:windowId" element={<WindowContent />}>
+        <Route path="window/:windowId/:windowType" element={<WindowContent />}>
         </Route>
       </Routes>
       <Footer />
