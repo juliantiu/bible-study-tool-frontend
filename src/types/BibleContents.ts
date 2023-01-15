@@ -1,3 +1,15 @@
+export interface PublicLanguage {
+  iso639: string;
+  endonym: string;
+  bibles: PublicBibleVersion[]
+}
+
+export interface PublicBibleVersion {
+  version: string;
+  fileName: string;
+  abbreviation: string;
+}
+
 export interface BibleContents {
   [bibleBook: string]: BibleBook;
 }

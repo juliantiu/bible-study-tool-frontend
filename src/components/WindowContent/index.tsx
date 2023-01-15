@@ -4,8 +4,6 @@ import { WindowType } from '../../types/Windows';
 import Read from '../Read';
 import Memorize from '../Memorize';
 import Search from '../Search';
-import useVerseRequester from '../../hooks/useVerseRequester';
-import { useEffect } from 'react';
 
 export default function WindowContent() {
   const { windowId } = useParams();

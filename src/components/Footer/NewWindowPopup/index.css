@@ -26,4 +26,9 @@
 
 #new-window-add-button {
   background-color: #191970 !important;
+  opacity: .8;
+}
+
+#new-window-add-button:hover {
+  opacity: 1;
 }

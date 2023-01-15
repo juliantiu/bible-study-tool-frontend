@@ -1,0 +1,13 @@
+[
+  {
+    "iso639": "eng",
+    "endonym": "English",
+    "bibles": [
+      {
+        "version": "Recovery Version",
+        "fileName": "recovery_version",
+        "abbreviation": "REC"
+      }
+    ]
+  }
+]

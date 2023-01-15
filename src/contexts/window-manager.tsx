@@ -19,7 +19,7 @@ interface WindowManagerContextProviderProps {
 }
 
 export function WindowManagerContextProvider({ children }: WindowManagerContextProviderProps) {
-  const { language, bibleVersion } = useGlobalFeaturesConfiguration();
+  const { defaultLanguage: language, defaultBibleVersion: bibleVersion } = useGlobalFeaturesConfiguration();
   const [windows, setWindows] = useState<Window[]>(
     () => {
       const defaultWindow: ReadWindow = {
