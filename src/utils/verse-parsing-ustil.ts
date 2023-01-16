@@ -64,7 +64,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
   let currentBook = '';
   let currentChapterNumber = 1;
 
-  return tokenizedNumbers.reduce( 
+  return tokenizedNumbers?.reduce( 
     (accumulator, item, idx, arr) => { 
       if (isChapter(item, arr[idx + 1])) {
 
@@ -128,7 +128,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
       return accumulator;
     },
     [] as (string | number | undefined)[][]
-  );
+  ) ?? [];
 }
 
 function tokenizeVerseNumericalValues(rawVerses: string) {
@@ -138,7 +138,7 @@ function tokenizeVerseNumericalValues(rawVerses: string) {
   return matches;
 }
 
-export function processTokenizedNumbers(rawVerses: string) {
+export function processRawVerses(rawVerses: string) {
 
   const tokenizedVerseNumericalValues =
     tokenizeVerseNumericalValues(rawVerses);

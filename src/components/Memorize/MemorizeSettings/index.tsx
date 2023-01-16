@@ -1,6 +1,7 @@
 import './index.css'
 import { useCallback, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
+import { BibleVerse } from '../../../types/BibleContents';
 
 const enum DifficultyLevels {
   VerseOnly,
@@ -9,8 +10,14 @@ const enum DifficultyLevels {
   ReferenceOnly
 }
 
-export default function MemorizeSettings() {
+interface IMemorizeSettings {
+  requestVerses: (rawVerses: string) => BibleVerse[];
+  setVerseList: React.Dispatch<React.SetStateAction<BibleVerse[]>>;
+}
+
+export default function MemorizeSettings({ requestVerses, setVerseList }: IMemorizeSettings) {
   const [difficulty, setDifficulty] = useState(DifficultyLevels.Normal);
+  const [inputtedVerses, setInputtedVerses] = useState('');
 
   const onCheckboxClick = useCallback(
     (diff: DifficultyLevels)=> {
@@ -18,6 +25,14 @@ export default function MemorizeSettings() {
     },
     [setDifficulty]
   );
+
+  const onInputVersesChange = (elem: any) => {
+    const { value } = elem.target;
+    setInputtedVerses(value);
+    setVerseList(
+      requestVerses(value)
+    );
+  };
 
   const checkboxOptions =
     ([
@@ -54,6 +69,8 @@ export default function MemorizeSettings() {
                     as="textarea"
                     placeholder="Input verses here (ex. Phil. 1:20-2:13; Mark 12:30)"
                     style={{ height: '60px' }}
+                    onChange={onInputVersesChange}
+                    value={inputtedVerses}
                   />
                 </Form.Group>
               </Form>
