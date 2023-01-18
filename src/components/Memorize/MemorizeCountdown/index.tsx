@@ -45,7 +45,6 @@ function startTimer(
   React.Dispatch<React.SetStateAction<
     { hh: number; mm: number; ss: number; }
   >>,
-  setTimerState: React.Dispatch<React.SetStateAction<TimerStateOptions>>,
   timerObj: any
 ) {
   let dateNow = new Date();
@@ -71,7 +70,6 @@ function startTimer(
 
         stopTimer(timerObj);
         setCurrentTimerValues({ hh: 0, mm: 0, ss: 0 });
-        setTimerState(TimerStateOptions.finished);
 
       }
     },
@@ -106,7 +104,6 @@ function timerFunctionality(
       startTimer(
         currentTimerValues,
         setCurrentTimerValues,
-        setTimerState,
         timerObj);
       break;
     case TimerStateOptions.pause:
@@ -143,7 +140,7 @@ export default function MemorizeCountdown({
 
   const onChangeReferenceTimer = (ref: any) => {
     const { name, value } = ref.target;
-    setReferenceTimerValues(prev => ({ ...prev, [name]: value }));
+    setReferenceTimerValues(prev => ({ ...prev, [name]: +value }));
   }
 
   const timerForm =
@@ -233,6 +230,23 @@ export default function MemorizeCountdown({
       setCurrentTimerValues({ ...referenceTimerValues });
     },
     [referenceTimerValues]
+  );
+
+  useEffect(
+    () => {
+      setTimerState(
+        prev => {
+          if ((currentTimerValues.hh === 0
+            && currentTimerValues.mm === 0
+            && currentTimerValues.ss === 0)
+            && prev === TimerStateOptions.play)
+            return TimerStateOptions.finished
+            
+          return prev;
+        }
+      );
+    },
+    [currentTimerValues]
   );
 
   const timerZeroed = 

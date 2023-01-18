@@ -165,7 +165,6 @@ function selectNextIndex(
   let chosenVerse: BibleVerse;
   let randomIndex = 0;
 
-  console.log('');
   do {
     randomIndex = Math.floor(Math.random() * numVerses);
 
@@ -186,6 +185,38 @@ function selectNextIndex(
   )
 
   setCurrIdx(randomIndex);
+}
+
+function handleEmptyInputs(allInputs: NodeListOf<Element>) {
+  let hasEmptyInput = false;
+  for (let i = 0; i < allInputs.length; ++i) {
+    const elem = allInputs[i] as any;
+    if (!elem.value) {
+
+      elem.style.borderColor = 'red';
+      hasEmptyInput = true;
+
+    }
+  }
+  return hasEmptyInput;
+}
+
+function processAnswers(
+  allInputs: NodeListOf<Element>,
+  verseStructureCopy: (string | MemoryVerseWord)[]
+) {
+  for (let i = 0; i < allInputs.length; ++i) {
+    const elem = allInputs[i] as any;
+    const wordIdx = elem.id.split('-')[3];
+    const inputValue = elem.value;
+
+    (verseStructureCopy[wordIdx] as MemoryVerseWord)
+      .attemptedWord = inputValue;
+
+    elem.value = '';
+  }
+
+  return verseStructureCopy;
 }
 
 interface IMemorizeQuizWindow {
@@ -226,7 +257,7 @@ export default function MemorizeQuizWindow({
     [currentVerse, numBlanks]
   );
 
-  const verseStructure = useMemo(
+  let verseStructure = useMemo(
     () => { return generateVerseStructure(currentVerse, memoryVerseWords) },
     [currentVerse, memoryVerseWords]
   );
@@ -239,52 +270,25 @@ export default function MemorizeQuizWindow({
       if (timerState !== TimerStateOptions.play) return;
 
       const allInputs =
-        document.querySelectorAll('[id^=memorize-word-input-]');
+        document
+          .querySelectorAll
+            ('[id^=memorize-word-input-]');
       
-      const verseStructureCopy = [...verseStructure]; 
-
-      let hasEmptyInput = false;
-      for (let i = 0; i < allInputs.length; ++i) {
-        const elem = allInputs[i] as any;
-        if (!elem.value) {
-
-          elem.style.borderColor = 'red';
-          hasEmptyInput = true;
-
-        } else {
-
-          const wordIdx = elem.id.split('-')[3];
-          const inputValue = elem.value;
-          
-          const memoryVerseWord =
-            verseStructureCopy[wordIdx] as MemoryVerseWord;
-
-          memoryVerseWord.attemptedWord = inputValue;
-        }
-      }
+      // Mark out all empty inputs in red
+      const hasEmptyInput =
+        handleEmptyInputs(allInputs);
 
       if (hasEmptyInput) return;
 
+      // Process non-blank input values
+      const verseStructureCopy = [...verseStructure]; 
+      verseStructure = processAnswers(allInputs, verseStructureCopy);
+
+      // set the current verse 
       setVerseHistory(prev => {
         prev.push(currentVerse);
         return prev;
       });
-
-      selectNextIndex(
-        uniqueVerseList,
-        setCurrIdx,
-        verseHistory,
-        timerState
-      );
-    },
-    [currentVerse, verseStructure, uniqueVerseList, setCurrIdx, setVerseHistory, verseHistory, timerState]
-  );
-
-  useEffect(
-    () => {
-
-      if (!currentVerse) return;
-      if (!verseStructure || verseStructure.length <= 0) return;
 
       setCurrentMemorizeSession(
         prev => {
@@ -298,8 +302,40 @@ export default function MemorizeQuizWindow({
           return prev;
         }
       );
+
+      selectNextIndex(
+        uniqueVerseList,
+        setCurrIdx,
+        verseHistory,
+        timerState
+      );
     },
-    [setCurrentMemorizeSession, currentVerse, verseStructure]
+    [
+      currentVerse,
+      verseStructure, 
+      uniqueVerseList, 
+      setCurrIdx, 
+      setVerseHistory, 
+      verseHistory, 
+      timerState
+    ]
+  );
+
+  useEffect(
+    () => {
+      // every time a session is stopped, clear out all the input fields
+      if (timerState === TimerStateOptions.stop) {
+        const allInputs =
+          document
+            .querySelectorAll
+              ('[id^=memorize-word-input-]');
+
+        for (const elem of Array.from(allInputs)) {
+          (elem as any).value = '';
+        }
+      }
+    },
+    [timerState]
   );
 
   const verseDisplay = verseStructure.map(
@@ -331,6 +367,7 @@ export default function MemorizeQuizWindow({
             key={`memorize-word-input-${idx}`}
             id={`memorize-word-input-${idx}`}
             name={`memorize-word-input-${idx}`}
+            type="text"
             className={`memorize-quiz-window-verse-input ${idx === 0 ? 'memorize-quiz-window-verse-ref' : ''}`}
             disabled={timerState !== TimerStateOptions.play}
           />

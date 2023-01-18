@@ -47,7 +47,7 @@ export default function MemorizeSettings({
         }
       );
     },
-    [setCurrentMemorizeSession]
+    [inputtedVerses, setCurrentMemorizeSession]
   );
 
   const checkboxOptions =
@@ -69,6 +69,7 @@ export default function MemorizeSettings({
               id={`memorize-settings-option-inline-${option}`}
               onChange={() => onCheckboxClick(level)}
               checked={level === difficulty}
+              disabled={timerState !== TimerStateOptions.stop}
             />
           );
         }

@@ -35,12 +35,23 @@ export default function Memorize(memorizeProps: IMemorize) {
 
   useEffect(
     () => {
-      if (currSessionId === currentMemorizeSession.memorizeSessionId) return;
-
       setMemorizeSessionsHistory(
         prev => {
-          prev.push(currentMemorizeSession);
-          return prev;
+          const prevCopy = [...prev];
+          const existingSession = prevCopy[prevCopy.length-1];
+
+          if (!!existingSession
+            && existingSession.memorizeSessionId
+               === currentMemorizeSession.memorizeSessionId)
+          {
+            existingSession.inputVerses = currentMemorizeSession.inputVerses;
+            existingSession.memorizeSessionId = currentMemorizeSession.memorizeSessionId;
+            existingSession.memoryVerses = [...currentMemorizeSession.memoryVerses];
+            return prevCopy;
+          }
+          
+          prevCopy.push(currentMemorizeSession);
+          return prevCopy;
         }
       );
     },
