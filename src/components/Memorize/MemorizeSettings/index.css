@@ -1,14 +1,15 @@
-#memorize-searchbar-container-primary {
-  padding: 40px 0px 10px 0px;
-}
-
-#memorize-searchbar-container-secondary {
+#memorize-input-verses-container {
+  height: 90px;
   padding: 15px;
   background-color: #FFFFFF;
 }
 
 #memorize-difficulty-container {
-  margin-top: -20px;
-  padding: 5px 15px 0px 15px;
+  padding: 0px 15px;
+
   background-color: #FFFFFF;
+
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
 }

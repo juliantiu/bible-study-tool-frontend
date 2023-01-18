@@ -1,13 +1,7 @@
 import './index.css'
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
 import { useEffect, useRef, useState } from 'react';
-
-const enum TimerInterfaceOptions {
-  stop,
-  play,
-  pause,
-  repeat
-}
+import { TimerStateOptions } from '../../../types/VerseMemorization';
 
 function stopTimer(timerObj: any) {
   clearInterval(timerObj?.current);
@@ -18,16 +12,19 @@ function stopAndResetTimer(
   timerObj: any,
   referenceTimerValues:
     { hh: number; mm: number; ss: number; },
+  setCurrentSessionId:
+    React.Dispatch<React.SetStateAction<string>>,
   setCurrentTimerValues:
     React.Dispatch<React.SetStateAction<
       { hh: number; mm: number; ss: number; }
     >>
 ) {
+  setCurrentSessionId((Math.random() + 1).toString(16).substring(2));
   stopTimer(timerObj);
   setCurrentTimerValues({ ...referenceTimerValues });
 }
 
-function setTimerEndTime(
+function setTimerStartTime(
   dateNow: Date,
   goalDate: Date,
   currentTimerValues:
@@ -48,11 +45,12 @@ function startTimer(
   React.Dispatch<React.SetStateAction<
     { hh: number; mm: number; ss: number; }
   >>,
+  setTimerState: React.Dispatch<React.SetStateAction<TimerStateOptions>>,
   timerObj: any
 ) {
   let dateNow = new Date();
   const goalDate = new Date();
-  setTimerEndTime(dateNow, goalDate, currentTimerValues);
+  setTimerStartTime(dateNow, goalDate, currentTimerValues);
 
   timerObj.current = setInterval(
     () => {
@@ -60,6 +58,7 @@ function startTimer(
       const timeElapsed = +goalDate - +dateNow;
 
       if (timeElapsed >= 0) {
+
         setCurrentTimerValues(() => {
           return ({
             hh: Math.floor(timeElapsed / 3600000),
@@ -67,9 +66,13 @@ function startTimer(
             ss: Math.floor((timeElapsed % 60000) / 1000)
           });
         });
+
       } else {
+
         stopTimer(timerObj);
         setCurrentTimerValues({ hh: 0, mm: 0, ss: 0 });
+        setTimerState(TimerStateOptions.finished);
+
       }
     },
     1000
@@ -77,44 +80,65 @@ function startTimer(
 }
 
 function timerFunctionality(
-  selectedOption: TimerInterfaceOptions,
+  timerState: TimerStateOptions,
   referenceTimerValues:
     { hh: number; mm: number; ss: number; },
   currentTimerValues:
     { hh: number; mm: number; ss: number; },
+  setCurrentSessionId:
+    React.Dispatch<React.SetStateAction<string>>,
   setCurrentTimerValues:
     React.Dispatch<React.SetStateAction<
       { hh: number; mm: number; ss: number; }
     >>,
+  setTimerState: React.Dispatch<React.SetStateAction<TimerStateOptions>>,
   timerObj: any)
 {
-  switch (selectedOption) {
-    case TimerInterfaceOptions.stop:
-      stopAndResetTimer
-        (timerObj, referenceTimerValues, setCurrentTimerValues);
+  switch (timerState) {
+    case TimerStateOptions.stop:
+      stopAndResetTimer(
+        timerObj,
+        referenceTimerValues,
+        setCurrentSessionId,
+        setCurrentTimerValues);
       break;
-    case TimerInterfaceOptions.play:
-      startTimer(currentTimerValues, setCurrentTimerValues, timerObj);
+    case TimerStateOptions.play:
+      startTimer(
+        currentTimerValues,
+        setCurrentTimerValues,
+        setTimerState,
+        timerObj);
       break;
-    case TimerInterfaceOptions.pause:
+    case TimerStateOptions.pause:
       stopTimer(timerObj);
       break;
-    case TimerInterfaceOptions.repeat:
-      stopAndResetTimer
-      (timerObj, referenceTimerValues, setCurrentTimerValues);
-      break;
+    // case TimerStateOptions.repeat:
+    //   stopAndResetTimer
+    //   (timerObj, referenceTimerValues, setCurrentTimerValues);
+    //   break;
     default:
       break;
   }
 }
 
-export default function MemorizeCountdown() {
-  const [selectedInterfaceOption, setSelectedInterfaceOption] =
-    useState(TimerInterfaceOptions.stop);
+interface IMemorizeTimer {
+  setCurrentSessionId: React.Dispatch<React.SetStateAction<string>>,
+  setTimerState: React.Dispatch<React.SetStateAction<TimerStateOptions>>;
+  timerState: TimerStateOptions;
+}
+
+export default function MemorizeCountdown({
+  setCurrentSessionId,
+  setTimerState,
+  timerState
+}: IMemorizeTimer) {
+
   const [referenceTimerValues, setReferenceTimerValues] =
     useState({ hh: 0, mm: 0, ss: 0 });
+
   const [currentTimerValues, setCurrentTimerValues] =
     useState({ hh: 0, mm: 0, ss: 0 });
+
   const timerObj = useRef();
 
   const onChangeReferenceTimer = (ref: any) => {
@@ -122,43 +146,86 @@ export default function MemorizeCountdown() {
     setReferenceTimerValues(prev => ({ ...prev, [name]: value }));
   }
 
-  const countdownForm =
-    (selectedInterfaceOption
-      === TimerInterfaceOptions.stop)
+  const timerForm =
+    (timerState
+      === TimerStateOptions.stop)
       && 
         ['hh', 'mm', 'ss']
           .map(
             label => {
               return (
-                <InputGroup key={`memorize-countdown-timer-form-${label}`} className="memorize-countdown-input">
-                  <Form.Control name={label} size='lg' type='number' max='59' min='0' value={(referenceTimerValues as any)[label]} onChange={onChangeReferenceTimer}/>
+                <InputGroup
+                  key={`memorize-timer-form-${label}`}
+                  className="memorize-timer-input"
+                >
+                  <Form.Control
+                    name={label}
+                    type='number'
+                    max='59'
+                    min='0'
+                    value={(referenceTimerValues as any)[label]}
+                    onChange={onChangeReferenceTimer}
+                  />
                   <InputGroup.Text>{label}</InputGroup.Text> 
                 </InputGroup>
               );
             }
           );
 
-  const countdownTimerDisplay =
-    (selectedInterfaceOption === TimerInterfaceOptions.play
-      || selectedInterfaceOption === TimerInterfaceOptions.pause
-      || selectedInterfaceOption === TimerInterfaceOptions.repeat)
+  const timerDisplay =
+    (timerState === TimerStateOptions.play
+      || timerState === TimerStateOptions.pause
+      || timerState === TimerStateOptions.repeat
+      || timerState === TimerStateOptions.finished)
       && (
-        <div id="memorize-countdown-timer-display-container">
-          <div className="memorize-countdown-timer-display-value"><span>{currentTimerValues.hh}</span><p>HOURS</p></div>
-          <div className="memorize-countdown-timer-display-value"><span>{currentTimerValues.mm}</span><p>MINUTES</p></div>
-          <div className="memorize-countdown-timer-display-value"><span>{currentTimerValues.ss}</span><p>SECONDS</p></div>
-        </div>
+        <>
+          <InputGroup
+            key="memorize-timer-form-readonly-hh"
+            className="memorize-timer-input"
+          >
+            <Form.Control
+              name="memorize-timer-form-readonly-hh"
+              value={currentTimerValues.hh}
+              readOnly={true}
+            />
+            <InputGroup.Text>hh</InputGroup.Text> 
+          </InputGroup>
+          <InputGroup
+            key="memorize-timer-form-readonly-mm"
+            className="memorize-timer-input"
+          >
+            <Form.Control
+              name="memorize-timer-form-readonly-mm"
+              value={currentTimerValues.mm}
+              readOnly={true}
+            />
+            <InputGroup.Text>mm</InputGroup.Text> 
+          </InputGroup>
+          <InputGroup
+            key="memorize-timer-form-readonly-ss"
+            className="memorize-timer-input"
+          >
+            <Form.Control
+              name="memorize-timer-form-readonly-ss"
+              value={currentTimerValues.ss}
+              readOnly={true}
+            />
+            <InputGroup.Text>ss</InputGroup.Text> 
+          </InputGroup>
+        </>
       );
 
-  const onInterfaceOptionClick = (selectedOption: TimerInterfaceOptions) => {
+  const onTimerStateClick = (state: TimerStateOptions) => {
     timerFunctionality(
-        selectedOption,
+        state,
         referenceTimerValues,
         currentTimerValues,
+        setCurrentSessionId,
         setCurrentTimerValues,
+        setTimerState,
         timerObj
       );
-    setSelectedInterfaceOption(selectedOption);
+    setTimerState(state);
   }
 
   useEffect(
@@ -168,31 +235,32 @@ export default function MemorizeCountdown() {
     [referenceTimerValues]
   );
 
-  const disablePlayOrPauseButton = 
+  const timerZeroed = 
     currentTimerValues.hh === 0
       && currentTimerValues.mm === 0
       && currentTimerValues.ss === 0
 
   const playButton = 
-    (selectedInterfaceOption === TimerInterfaceOptions.stop
-      || selectedInterfaceOption === TimerInterfaceOptions.pause
-      || selectedInterfaceOption === TimerInterfaceOptions.repeat)
+    (timerState === TimerStateOptions.stop
+      || timerState === TimerStateOptions.pause
+      || timerState === TimerStateOptions.repeat)
       && (
         <button
-          onClick={() => onInterfaceOptionClick(TimerInterfaceOptions.play)}
-          disabled={disablePlayOrPauseButton}
+          onClick={() => onTimerStateClick(TimerStateOptions.play)}
+          disabled={timerZeroed}
         >
           &#10148;
         </button>
       );
 
   const pauseButton =
-    selectedInterfaceOption === TimerInterfaceOptions.play
+    (timerState === TimerStateOptions.play
+      || timerState === TimerStateOptions.finished)
       && (
         <button
           name="pause-button"
-          onClick={() => onInterfaceOptionClick(TimerInterfaceOptions.pause)}
-          disabled={disablePlayOrPauseButton}
+          onClick={() => onTimerStateClick(TimerStateOptions.pause)}
+          disabled={timerZeroed}
         >
           &#10073;&#10073;
         </button> 
@@ -200,39 +268,35 @@ export default function MemorizeCountdown() {
     
   const stopButton = (
     <button
-      onClick={() => onInterfaceOptionClick(TimerInterfaceOptions.stop)}
+      onClick={() => onTimerStateClick(TimerStateOptions.stop)}
     >
       <div id="stop-button"/>
     </button>
   );
 
-  const repeatButton = (
-    <button
-      onClick={() => onInterfaceOptionClick(TimerInterfaceOptions.repeat)}
-      disabled={selectedInterfaceOption === TimerInterfaceOptions.stop}
-    >
-      &#8634;
-    </button>
-  );
+  // const repeatButton = (
+  //   <button
+  //     onClick={() => onTimerStateClick(TimerStateOptions.repeat)}
+  //     disabled={timerState === TimerStateOptions.stop}
+  //   >
+  //     &#8634;
+  //   </button>
+  // );
 
   return (
-    <div id="memorize-countdown">
-      <Row>
-        <Col xs={12}>
-          <div id="memorize-countdown-container-primary">
-            <div id="memorize-countdown-container-secondary">
-              {countdownForm}
-              {countdownTimerDisplay}
-            </div>
-            <div id="memorize-interface-options-container">
-              {playButton}
-              {pauseButton}
-              {stopButton}
-              {repeatButton}
-            </div>
+    <Row>
+      <Col xs={12}>
+        <div id="memorize-timer-container">
+          {timerForm}
+          {timerDisplay}
+          <div id="memorize-timer-state-options-container">
+            {playButton}
+            {pauseButton}
+            {stopButton}
+            {/* {repeatButton} */}
           </div>
-        </Col>
-      </Row>
-    </div>
+        </div>
+      </Col>
+    </Row>
   );
 }

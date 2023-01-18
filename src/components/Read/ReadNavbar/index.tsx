@@ -15,10 +15,8 @@ export default function ReadNavbar() {
   }
 
   return (
-    <div id="window-navbar">
-      <div className='navbar-symbol'>
-        <h1>&#x1f4d6;</h1>
-      </div>
+    <div className="window-navbar">
+      <h1>READ</h1>
       <div id="verse-navigator" onMouseEnter={onVerseNavigatorHover} onMouseLeave={onVerseNavigatorHoverLeave}>
         <div className="verse-navigator-dot"/>
         <div className="verse-navigator-dot"/>

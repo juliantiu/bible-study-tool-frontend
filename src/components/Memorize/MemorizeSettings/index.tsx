@@ -1,22 +1,26 @@
 import './index.css'
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { BibleVerse } from '../../../types/BibleContents';
-
-const enum DifficultyLevels {
-  VerseOnly,
-  Easy,
-  Normal,
-  ReferenceOnly
-}
+import { DifficultyLevels, MemorizeSession, TimerStateOptions } from '../../../types/VerseMemorization';
 
 interface IMemorizeSettings {
+  difficulty: DifficultyLevels;
   requestVerses: (rawVerses: string) => BibleVerse[];
+  setCurrentMemorizeSession: React.Dispatch<React.SetStateAction<MemorizeSession>>;
+  setDifficulty: React.Dispatch<React.SetStateAction<DifficultyLevels>>;
   setVerseList: React.Dispatch<React.SetStateAction<BibleVerse[]>>;
+  timerState: TimerStateOptions;
 }
 
-export default function MemorizeSettings({ requestVerses, setVerseList }: IMemorizeSettings) {
-  const [difficulty, setDifficulty] = useState(DifficultyLevels.Normal);
+export default function MemorizeSettings({
+  difficulty,
+  requestVerses,
+  setCurrentMemorizeSession,
+  setDifficulty,
+  setVerseList,
+  timerState
+}: IMemorizeSettings) {
   const [inputtedVerses, setInputtedVerses] = useState('');
 
   const onCheckboxClick = useCallback(
@@ -34,12 +38,25 @@ export default function MemorizeSettings({ requestVerses, setVerseList }: IMemor
     );
   };
 
+  useEffect(
+    () => {
+      setCurrentMemorizeSession(
+        prev => { 
+          prev.inputVerses = inputtedVerses
+          return prev;
+        }
+      );
+    },
+    [setCurrentMemorizeSession]
+  );
+
   const checkboxOptions =
     ([
       ['Verse only', DifficultyLevels.VerseOnly],
-      ['Easy', DifficultyLevels.Easy],
-      ['Normal', DifficultyLevels.Normal],
-      ['Reference only', DifficultyLevels.ReferenceOnly]
+      ['25%', DifficultyLevels.twentyFive],
+      ['50%', DifficultyLevels.fifty],
+      ['75%', DifficultyLevels.seventyFive],
+      ['Reference only', DifficultyLevels.oneHundred]
     ] as const)
       .map(
         ([option, level]) => { 
@@ -58,37 +75,39 @@ export default function MemorizeSettings({ requestVerses, setVerseList }: IMemor
       );
 
   return (
-    <div id="memorize-settings">
-      <Row>
-        <Col xs={12}>
-          <div id="memorize-searchbar-container-primary">
-            <div id="memorize-searchbar-container-secondary">
+    <Row>
+      <Col xs={12}>
+        <Row>
+          <Col xs={12}>
+            <div id="memorize-input-verses-container">
               <Form>
                 <Form.Group>
                   <Form.Control
+                    id="memorize-input-verses-control"
                     as="textarea"
                     placeholder="Input verses here (ex. Phil. 1:20-2:13; Mark 12:30)"
                     style={{ height: '60px' }}
                     onChange={onInputVersesChange}
                     value={inputtedVerses}
+                    readOnly={timerState !== TimerStateOptions.stop}
                   />
                 </Form.Group>
               </Form>
             </div>
-          </div>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12}>
-          <div id="memorize-difficulty-container">
-            <Form>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <div id="memorize-difficulty-container">
+              <Form>
                 <Form.Group>
                   {checkboxOptions}
                 </Form.Group>
-            </Form>
-          </div>
-        </Col>
-      </Row>
-    </div>
+              </Form>
+            </div>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   );
 }

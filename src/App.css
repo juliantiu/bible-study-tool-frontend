@@ -1,14 +1,9 @@
-#window-navbar {
+.window-navbar {
   height: 60px;
   background-color: #191970;
   color: #FFFFFF;
   position: relative;
-}
-
-.navbar-symbol {
-  position: absolute;
-  bottom: -50px;
-  left: 46.5%
+  padding: 0px 15px;
 }
 
 .navbar-symbol h1 {
@@ -17,5 +12,6 @@
 
 .content-window {
   background-color: #f2efeb;
-  height: calc(100% - 60px);
+  height: calc(100vh - 60px);
+  padding: 15px;
 }
