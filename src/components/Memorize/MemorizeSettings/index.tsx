@@ -2,33 +2,30 @@ import './index.css'
 import { useCallback, useEffect, useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { BibleVerse } from '../../../types/BibleContents';
-import { DifficultyLevels, MemorizeSession, TimerStateOptions } from '../../../types/VerseMemorization';
+import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOptions } from '../../../types/VerseMemorization';
 
 interface IMemorizeSettings {
   difficulty: DifficultyLevels;
+  quizSettings: number;
   requestVerses: (rawVerses: string) => BibleVerse[];
   setCurrentMemorizeSession: React.Dispatch<React.SetStateAction<MemorizeSession>>;
   setDifficulty: React.Dispatch<React.SetStateAction<DifficultyLevels>>;
+  setQuizSettings: React.Dispatch<React.SetStateAction<number>>;
   setVerseList: React.Dispatch<React.SetStateAction<BibleVerse[]>>;
   timerState: TimerStateOptions;
 }
 
 export default function MemorizeSettings({
   difficulty,
+  quizSettings,
   requestVerses,
   setCurrentMemorizeSession,
   setDifficulty,
+  setQuizSettings,
   setVerseList,
   timerState
 }: IMemorizeSettings) {
   const [inputtedVerses, setInputtedVerses] = useState('');
-
-  const onCheckboxClick = useCallback(
-    (diff: DifficultyLevels)=> {
-      setDifficulty(diff);
-    },
-    [setDifficulty]
-  );
 
   const onInputVersesChange = (elem: any) => {
     const { value } = elem.target;
@@ -36,21 +33,22 @@ export default function MemorizeSettings({
     setVerseList(
       requestVerses(value)
     );
+    setCurrentMemorizeSession(
+      prev => { 
+        prev.inputVerses = value
+        return prev;
+      }
+    );
   };
 
-  useEffect(
-    () => {
-      setCurrentMemorizeSession(
-        prev => { 
-          prev.inputVerses = inputtedVerses
-          return prev;
-        }
-      );
+  const onRadioClick = useCallback(
+    (diff: DifficultyLevels)=> {
+      setDifficulty(diff);
     },
-    [inputtedVerses, setCurrentMemorizeSession]
+    [setDifficulty]
   );
 
-  const checkboxOptions =
+  const radioOptions =
     ([
       ['Verse only', DifficultyLevels.VerseOnly],
       ['25%', DifficultyLevels.twentyFive],
@@ -61,17 +59,47 @@ export default function MemorizeSettings({
       .map(
         ([option, level]) => { 
           return (
-            <Form.Check key={`memorize-settings-option-${option}`}
+            <Form.Check key={`memorize-settings-difficulty-${option}`}
               inline={true}
               label={option}
               name="group1"
               type="radio"
-              id={`memorize-settings-option-inline-${option}`}
-              onChange={() => onCheckboxClick(level)}
+              id={`memorize-settings-difficulty-inline-${option}`}
+              onChange={() => onRadioClick(level)}
               checked={level === difficulty}
               disabled={timerState !== TimerStateOptions.stop}
             />
           );
+        }
+      );
+  
+
+  const onCheckboxClick = useCallback(
+    (setting: MemorizationSettings)=> {
+      setQuizSettings(prev => prev ^ setting);
+    },
+    [setQuizSettings]
+  );
+  
+  const checkboxOptions = 
+    ([
+      ['Randomize', MemorizationSettings.randomOrder],
+      ['Remove duplicates', MemorizationSettings.removeDuplicates]
+    ] as const)
+      .map(
+        ([label, val]) => {
+          return (
+            <Form.Check key={`memorize-settings-option-${val}`}
+              inline={true}
+              label={label}
+              name="group2"
+              type="checkbox"
+              id={`memorize-settings-option-inline-${val}`}
+              onChange={() => onCheckboxClick(val)}
+              checked={!!(quizSettings & val)}
+              disabled={timerState !== TimerStateOptions.stop}
+            />
+          )
         }
       );
 
@@ -100,6 +128,13 @@ export default function MemorizeSettings({
         <Row>
           <Col xs={12}>
             <div id="memorize-difficulty-container">
+              <Form>
+                <Form.Group>
+                  {radioOptions}
+                </Form.Group>
+              </Form>
+            </div>
+            <div id="memorize-settings-container">
               <Form>
                 <Form.Group>
                   {checkboxOptions}

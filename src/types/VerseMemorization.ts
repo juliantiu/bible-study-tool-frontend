@@ -32,3 +32,8 @@ export const enum TimerStateOptions {
   repeat,
   finished
 }
+
+export const enum MemorizationSettings {
+  randomOrder = 1 << 0,      // 01
+  removeDuplicates = 1 << 1, // 10
+}

@@ -23,6 +23,7 @@ export default function Memorize(memorizeProps: IMemorize) {
   const [verseList, setVerseList] = useState<BibleVerse[]>([]);
   const [difficulty, setDifficulty] = useState(DifficultyLevels.fifty);
   const [timerState, setTimerState] = useState(TimerStateOptions.stop);
+  const [quizSettings, setQuizSettings] = useState(3); // binary 11
 
   const [currSessionId, setCurrentSessionId] =
     useState((Math.random() + 1).toString(16).substring(2));
@@ -60,11 +61,11 @@ export default function Memorize(memorizeProps: IMemorize) {
 
   useEffect(
     () => {
-      setCurrentMemorizeSession({
-        inputVerses: '',
+      setCurrentMemorizeSession(prev => ({
+        inputVerses: prev.inputVerses,
         memorizeSessionId: currSessionId,
         memoryVerses: []
-      });
+      }));
     },
     [currSessionId, setCurrentMemorizeSession]
   );
@@ -79,9 +80,11 @@ export default function Memorize(memorizeProps: IMemorize) {
               <Col xs={12}>
                 <MemorizeSettings
                   difficulty={difficulty}
+                  quizSettings={quizSettings}
                   requestVerses={requestVerses}
                   setCurrentMemorizeSession={setCurrentMemorizeSession}
                   setDifficulty={setDifficulty}
+                  setQuizSettings={setQuizSettings}
                   setVerseList={setVerseList}
                   timerState={timerState}/>
               </Col>
@@ -98,16 +101,20 @@ export default function Memorize(memorizeProps: IMemorize) {
               <Col xs={12}>
                 <MemorizeQuizWindow
                   difficulty={difficulty}
+                  quizSettings={quizSettings}
                   setCurrentMemorizeSession={setCurrentMemorizeSession}
                   timerState={timerState}
                   verseList={verseList}/>
               </Col>
             </Row>
           </Col>
-          <Col>
+          <Col xs={12} md={4}>
             <Row>
-              <Col xs={12} md={4}>
-                {/* <MemorizeHistory /> */}
+              <Col xs={12}>
+                <MemorizeHistory
+                  currentMemorizeSession={currentMemorizeSession}
+                  memorizeSessionsHistory={memorizeSessionsHistory}
+                />
               </Col>
             </Row>
           </Col>

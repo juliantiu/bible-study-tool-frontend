@@ -1,12 +1,57 @@
-#memorize-history {
+#memorize-history-container-primary {
+  height: calc(100vh - 94px);
+  width: 100%;
   background-color: #FFFFFF;
-  height: calc(100% - 30px);
-  margin-left: -24px;
-  padding-top: 60px;
-  padding-right: 15px;
+  padding: 15px;
 }
 
-#memorize-history-container {
-  height: calc(100% - 15px);
+#memorize-history-container-secondary {
+  height: 100%;
+  width: 100%;
   border: 1px solid #DDDDDD;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.memorize-history-section-display {
+  height: 40px;
+  padding: 5px 20px;
+
+  font-size: large;
+  font-weight: bold;
+
+  white-space: nowrap;
+  overflow-x: hidden;
+  text-overflow: ellipsis;
+
+  background-color: #191970;
+  color: #FFFFFF;
+
+  align-items: center;
+}
+
+.memorize-history-section-display > p{
+  margin: 0px;
+  padding: 0px;
+}
+
+.memorize-history-verse-body-container p {
+  display: inline-block;
+  margin: 0px 5px;
+}
+
+.memorize-history-verse-display-header-has-mistake > button {
+  background-color:	#eea6a6 !important;
+}
+
+.memorize-history-verse-display-header-no-mistake > button {
+  background-color:	#91cc8d !important;
+}
+
+.memorize-history-verse-word-display-no-mistake {
+  color: green;
+}
+
+.mmemorize-history-verse-word-display-has-mistake {
+  color: red;
 }

@@ -1,24 +1,27 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { BibleVerse } from '../../../types/BibleContents';
-import { DifficultyLevels, MemorizeSession, MemoryVerse, MemoryVerseWord, TimerStateOptions } from '../../../types/VerseMemorization';
+import { DifficultyLevels, MemorizationSettings, MemorizeSession, MemoryVerse, MemoryVerseWord, TimerStateOptions } from '../../../types/VerseMemorization';
 import './index.css';
 
-function generateUniqueSetOfVerses(verseList: BibleVerse[]) {
-  return [verseList[0], ...verseList.reduce(
-    (acc, item, idx, arr) => {
-      for(let i = 0; i <= idx; ++i) {
-        if (arr[i].bibleBook === item.bibleBook
-            && arr[i].bookChapter === item.bookChapter
-            && arr[i].chapterVerseNumber === item.chapterVerseNumber) continue;
+function generateUniqueSetOfVerses(quizSettings: number, verseList: BibleVerse[]) {
+  if (!(quizSettings & MemorizationSettings.removeDuplicates)) return verseList;
 
-        acc.push(item);
-      }
+  const verseListCopy = [...verseList];
 
-      return acc as BibleVerse[];
-    },
-    [] as BibleVerse[]
-  )];
+  return verseListCopy.filter(
+    (verse, index, verseList2) => {
+      const arrCopy = Array.from(Array(index).keys()).map(i => verseList2[i]);
+      const condition = 
+        arrCopy.some(v => v.bibleBook === verse.bibleBook
+                       && v.bookChapter === verse.bookChapter
+                       && v.chapterVerseNumber === verse.chapterVerseNumber)
+
+      if (condition) return false;
+
+      return true;
+    }
+  );
 }
 
 function selectVerse(
@@ -154,12 +157,18 @@ function generateVerseStructure(
 }
 
 function selectNextIndex(
+  quizSettings: number,
   uniqueVerseList: BibleVerse[],
   setCurrIdx: React.Dispatch<React.SetStateAction<number>>,
   verseHistory: BibleVerse[],
   timerState: TimerStateOptions
 ) {
   if (timerState !== TimerStateOptions.play) return;
+
+  if (!(quizSettings & MemorizationSettings.randomOrder)) {
+    setCurrIdx(verseHistory.length);
+    return;
+  } 
 
   const numVerses = uniqueVerseList.length;
   let chosenVerse: BibleVerse;
@@ -214,21 +223,24 @@ function processAnswers(
       .attemptedWord = inputValue;
 
     elem.value = '';
+    elem.style.borderColor = 'rgba(118, 118, 118, 0.3)';
   }
 
   return verseStructureCopy;
 }
 
 interface IMemorizeQuizWindow {
+  difficulty: DifficultyLevels;
+  quizSettings: number;
   setCurrentMemorizeSession:
     React.Dispatch<React.SetStateAction<MemorizeSession>>,
-  difficulty: DifficultyLevels;
   timerState: TimerStateOptions;
   verseList: BibleVerse[];
 }
 
 export default function MemorizeQuizWindow({
   difficulty,
+  quizSettings,
   setCurrentMemorizeSession,
   timerState,
   verseList,
@@ -238,13 +250,13 @@ export default function MemorizeQuizWindow({
   const [verseHistory, setVerseHistory] = useState<BibleVerse[]>([]);
 
   const uniqueVerseList = useMemo(
-    () => { return generateUniqueSetOfVerses(verseList) },  
-    [verseList]
+    () => { return generateUniqueSetOfVerses(quizSettings, verseList) },  
+    [quizSettings, verseList]
   );
 
   const currentVerse = useMemo(
     () => { return selectVerse(currIdx, uniqueVerseList); },
-    [currIdx, setVerseHistory, uniqueVerseList]
+    [currIdx, uniqueVerseList]
   );
 
   const numBlanks = useMemo(
@@ -292,18 +304,20 @@ export default function MemorizeQuizWindow({
 
       setCurrentMemorizeSession(
         prev => {
+          const prevCopy = {...prev};
           const memoryVerse: MemoryVerse = {
             bibleBook: currentVerse.bibleBook,
             bookChapter: currentVerse.bookChapter,
             chapterVerse: currentVerse.chapterVerseNumber,
             verseWords: verseStructure
           }
-          prev.memoryVerses.push(memoryVerse);
-          return prev;
+          prevCopy.memoryVerses.push(memoryVerse);
+          return prevCopy;
         }
       );
 
       selectNextIndex(
+        quizSettings,
         uniqueVerseList,
         setCurrIdx,
         verseHistory,
@@ -312,10 +326,11 @@ export default function MemorizeQuizWindow({
     },
     [
       currentVerse,
+      quizSettings,
       verseStructure, 
-      uniqueVerseList, 
       setCurrIdx, 
       setVerseHistory, 
+      uniqueVerseList, 
       verseHistory, 
       timerState
     ]
@@ -336,6 +351,16 @@ export default function MemorizeQuizWindow({
       }
     },
     [timerState]
+  );
+
+  useEffect(
+    () => {
+      // every time a session is stopped, clear out verse history
+      if (timerState === TimerStateOptions.stop) {
+        setVerseHistory([]);
+      }
+    },
+    [timerState, setVerseHistory]
   );
 
   const verseDisplay = verseStructure.map(
@@ -370,6 +395,8 @@ export default function MemorizeQuizWindow({
             type="text"
             className={`memorize-quiz-window-verse-input ${idx === 0 ? 'memorize-quiz-window-verse-ref' : ''}`}
             disabled={timerState !== TimerStateOptions.play}
+            // e.keyCode 13 is enter. If enter is pressed, prevent browser from refreshing automatically
+            onKeyDown={(e: any) => { if (e.keyCode === 13) e.preventDefault(); }}
           />
         );
       }

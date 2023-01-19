@@ -283,6 +283,7 @@ export default function MemorizeCountdown({
   const stopButton = (
     <button
       onClick={() => onTimerStateClick(TimerStateOptions.stop)}
+      disabled={timerState === TimerStateOptions.stop}
     >
       <div id="stop-button"/>
     </button>
