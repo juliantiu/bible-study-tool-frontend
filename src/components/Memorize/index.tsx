@@ -18,7 +18,7 @@ interface IMemorize {
 export default function Memorize(memorizeProps: IMemorize) {
   const { currWindow } = memorizeProps;
   const { bibleVersion, language } = currWindow;
-  const { requestVerses } = useVerseRequester(language ?? '', bibleVersion ?? '');
+  const { requestFullBibleBookName, requestVerses } = useVerseRequester(language ?? '', bibleVersion ?? '');
   
   const [verseList, setVerseList] = useState<BibleVerse[]>([]);
   const [difficulty, setDifficulty] = useState(DifficultyLevels.fifty);
@@ -102,6 +102,7 @@ export default function Memorize(memorizeProps: IMemorize) {
                 <MemorizeQuizWindow
                   difficulty={difficulty}
                   quizSettings={quizSettings}
+                  requestFullBibleBookName={requestFullBibleBookName}
                   setCurrentMemorizeSession={setCurrentMemorizeSession}
                   timerState={timerState}
                   verseList={verseList}/>
@@ -114,6 +115,7 @@ export default function Memorize(memorizeProps: IMemorize) {
                 <MemorizeHistory
                   currentMemorizeSession={currentMemorizeSession}
                   memorizeSessionsHistory={memorizeSessionsHistory}
+                  requestFullBibleBookName={requestFullBibleBookName}
                 />
               </Col>
             </Row>

@@ -146,3 +146,7 @@ export function processRawVerses(rawVerses: string) {
   return buildVerseRecipes(tokenizedVerseNumericalValues as string[]);
 
 }
+
+export function normalizeBibleBookName(keyword: string) {
+  return keyword.toLocaleLowerCase().replace(/[^\w\s]|_/g, '').replace(/\s+/g, '');
+}

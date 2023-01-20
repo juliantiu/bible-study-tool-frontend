@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
-import { BibleContents } from "../types/BibleContents";
+import { BibleBook, BibleContents } from "../types/BibleContents";
 import { generateBibleBookDirPath } from "../utils/file-systems-util";
-import { processRawVerses } from "../utils/verse-parsing-ustil";
-import { BIBLE_BOOK_KEYS } from "../utils/static-references-util";
+import { normalizeBibleBookName, processRawVerses } from "../utils/verse-parsing-ustil";
+import { BIBLE_BOOK_KEYS, BIBLE_BOOK_KEY_MAPPING } from "../utils/static-references-util";
 import processVerseRecipes from "../utils/verse-building-util";
 
 export default function useVerseRequester(language: string, bibleVersion: string) {
@@ -47,5 +47,23 @@ export default function useVerseRequester(language: string, bibleVersion: string
     [bibleContents, processRawVerses, processVerseRecipes]
   );
 
-  return { requestVerses };
+  const requestFullBibleBookName = useCallback(
+    (keyword: string) => {
+      const [bookName, reference] = keyword.split(' ');
+
+      const normalizedKeyword = normalizeBibleBookName(bookName);
+      const key = BIBLE_BOOK_KEY_MAPPING.get(normalizedKeyword);
+
+      if (!key) return keyword;
+
+      const bible = bibleContents[key];
+      
+      if (!bible && !reference) return keyword;
+
+      return `${bible?.fullName ?? bookName}${!!reference ? ` ${reference}` : ''}`;
+    },
+    [bibleContents]
+  );
+
+  return { requestFullBibleBookName, requestVerses };
 }

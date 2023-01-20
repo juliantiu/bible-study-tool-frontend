@@ -2,7 +2,7 @@ import './index.css';
 import { Accordion, Col, Row } from "react-bootstrap";
 import { MemorizeSession, MemoryVerse } from '../../../types/VerseMemorization';
 
-function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean) {
+function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean, requestFullBibleBookName: (keyword: string) => string) {
   return verses.map(
     (verse, idx) => {
 
@@ -13,10 +13,10 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean) {
           (v, idx) => {
 
             if (typeof v === 'string')
-              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}>{v}</p>;
+              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}>{idx === 0 ? requestFullBibleBookName(v) : v}</p>;
 
-            if (v.attemptedWord.trim() === v.missingWord.trim())
-              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-no-mistake">{v.missingWord}</p>;
+            if (requestFullBibleBookName(v.attemptedWord) === requestFullBibleBookName(v.missingWord))
+              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-no-mistake">{v.attemptedWord}</p>;
 
             hasMistake = true;
 
@@ -29,7 +29,7 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean) {
       return (
         <Accordion.Item key={`memorize-history-${isCurrent ? 'current-' : ''}verse-display-${idx}`} eventKey={`${idx}`}>
           <Accordion.Header className={hasMistake ? 'memorize-history-verse-display-header-has-mistake' : 'memorize-history-verse-display-header-no-mistake'}>
-            {verse.bibleBook} {verse.bookChapter}:{verse.chapterVerse}
+            {requestFullBibleBookName(verse.bibleBook)} {verse.bookChapter}:{verse.chapterVerse}
           </Accordion.Header>
           <Accordion.Body className="memorize-history-verse-body-container">
             {verseWords}
@@ -43,9 +43,10 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean) {
 interface IMemorizeHisotry {
   currentMemorizeSession: MemorizeSession;
   memorizeSessionsHistory: MemorizeSession[];
+  requestFullBibleBookName: (keyword: string) => string;
 }
 
-export default function MemorizeHistory({ currentMemorizeSession, memorizeSessionsHistory }: IMemorizeHisotry) {
+export default function MemorizeHistory({ currentMemorizeSession, memorizeSessionsHistory, requestFullBibleBookName }: IMemorizeHisotry) {
 
   const pastSessionsCopy = [...memorizeSessionsHistory].reverse();
 
@@ -53,7 +54,7 @@ export default function MemorizeHistory({ currentMemorizeSession, memorizeSessio
     pastSess => {
 
       const pastSessVersesCopy = [...pastSess.memoryVerses].reverse();
-      const pastSessVerses = mapThroughVerses(pastSessVersesCopy, false);
+      const pastSessVerses = mapThroughVerses(pastSessVersesCopy, false, requestFullBibleBookName);
 
       return (
         <div key={`memorize-history-past-session-display-${pastSess.memorizeSessionId}`}>
@@ -66,7 +67,7 @@ export default function MemorizeHistory({ currentMemorizeSession, memorizeSessio
 
   const memoryVersesCopy =
     [...currentMemorizeSession.memoryVerses].reverse();
-  const currentSession = mapThroughVerses(memoryVersesCopy, true);  
+  const currentSession = mapThroughVerses(memoryVersesCopy, true, requestFullBibleBookName);  
 
   return (
     <Row className="h-100">

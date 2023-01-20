@@ -18,6 +18,7 @@ export interface BibleBook {
   bibleBook: string;
   category: string;
   chapters: number;
+  fullName: string;
   key: string;
   language: string;
   subcategory: string;

@@ -164,13 +164,18 @@ function selectNextIndex(
   timerState: TimerStateOptions
 ) {
   if (timerState !== TimerStateOptions.play) return;
+  
+  const numVerses = uniqueVerseList.length;
 
   if (!(quizSettings & MemorizationSettings.randomOrder)) {
-    setCurrIdx(verseHistory.length);
+    setCurrIdx(currIdx => {
+      if (currIdx < numVerses-1) return currIdx + 1;
+      return 0;
+    });
+
     return;
   } 
 
-  const numVerses = uniqueVerseList.length;
   let chosenVerse: BibleVerse;
   let randomIndex = 0;
 
@@ -232,6 +237,7 @@ function processAnswers(
 interface IMemorizeQuizWindow {
   difficulty: DifficultyLevels;
   quizSettings: number;
+  requestFullBibleBookName: (keyword: string) => string;
   setCurrentMemorizeSession:
     React.Dispatch<React.SetStateAction<MemorizeSession>>,
   timerState: TimerStateOptions;
@@ -241,6 +247,7 @@ interface IMemorizeQuizWindow {
 export default function MemorizeQuizWindow({
   difficulty,
   quizSettings,
+  requestFullBibleBookName,
   setCurrentMemorizeSession,
   timerState,
   verseList,
@@ -356,11 +363,17 @@ export default function MemorizeQuizWindow({
   useEffect(
     () => {
       // every time a session is stopped, clear out verse history
-      if (timerState === TimerStateOptions.stop) {
-        setVerseHistory([]);
-      }
+      if (timerState === TimerStateOptions.stop) setVerseHistory([]);
     },
     [timerState, setVerseHistory]
+  );
+
+  useEffect(
+    () => {
+      // every time a session is stopped, reset index
+      if (timerState === TimerStateOptions.stop) setCurrIdx(0);
+    },
+    [timerState, setCurrIdx]
   );
 
   const verseDisplay = verseStructure.map(
@@ -370,7 +383,7 @@ export default function MemorizeQuizWindow({
           <p key={`memorize-word-text-${idx}`}
             className={`memorize-quiz-window-verse-p ${idx === 0 ? 'memorize-quiz-window-verse-ref' : ''}`}
           >
-            {item}
+            {idx === 0 ? requestFullBibleBookName(item) : item}
           </p>
         );
       } else {
