@@ -6,10 +6,12 @@ import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOpti
 
 interface IMemorizeSettings {
   difficulty: DifficultyLevels;
+  inputtedVerses: string;
   quizSettings: number;
   requestVerses: (rawVerses: string) => BibleVerse[];
   setCurrentMemorizeSession: React.Dispatch<React.SetStateAction<MemorizeSession>>;
   setDifficulty: React.Dispatch<React.SetStateAction<DifficultyLevels>>;
+  setInputtedVerses: React.Dispatch<React.SetStateAction<string>>;
   setQuizSettings: React.Dispatch<React.SetStateAction<number>>;
   setVerseList: React.Dispatch<React.SetStateAction<BibleVerse[]>>;
   timerState: TimerStateOptions;
@@ -17,15 +19,16 @@ interface IMemorizeSettings {
 
 export default function MemorizeSettings({
   difficulty,
+  inputtedVerses,
   quizSettings,
   requestVerses,
   setCurrentMemorizeSession,
   setDifficulty,
+  setInputtedVerses,
   setQuizSettings,
   setVerseList,
   timerState
 }: IMemorizeSettings) {
-  const [inputtedVerses, setInputtedVerses] = useState('');
 
   const onInputVersesChange = (elem: any) => {
     const { value } = elem.target;

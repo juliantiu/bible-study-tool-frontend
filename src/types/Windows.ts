@@ -1,4 +1,5 @@
 import { BibleVerse } from "./BibleContents";
+import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOptions } from "./VerseMemorization";
 
 export enum WindowType {
   none = 0,
@@ -41,6 +42,23 @@ export interface SearchWindow extends Window {
 }
 
 export interface MemorizeWindow extends Window {
-  rawSearch: string;
-  verses: BibleVerse[];
+  verseList: BibleVerse[];
+  difficulty: DifficultyLevels;
+  timerState: TimerStateOptions;
+  quizSettings: MemorizationSettings;
+  currSessionId: string;
+  memorizeSessionsHistory: MemorizeSession[];
+  currentMemorizeSession: MemorizeSession;
+  referenceTimerValues: {
+    hh: number;
+    mm: number;
+    ss: number;
+  };
+  currentTimerValues: {
+    hh: number;
+    mm: number;
+    ss: number;
+  };
+  currIdx: number;
+  verseHistory: BibleVerse[]; 
 }

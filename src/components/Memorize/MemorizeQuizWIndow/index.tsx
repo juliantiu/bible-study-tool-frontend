@@ -235,26 +235,31 @@ function processAnswers(
 }
 
 interface IMemorizeQuizWindow {
+  currIdx: number;
   difficulty: DifficultyLevels;
   quizSettings: number;
   requestFullBibleBookName: (keyword: string) => string;
+  setCurrIdx: React.Dispatch<React.SetStateAction<number>>;
   setCurrentMemorizeSession:
-    React.Dispatch<React.SetStateAction<MemorizeSession>>,
+    React.Dispatch<React.SetStateAction<MemorizeSession>>;
+  setVerseHistory: React.Dispatch<React.SetStateAction<BibleVerse[]>>;
   timerState: TimerStateOptions;
+  verseHistory: BibleVerse[];
   verseList: BibleVerse[];
 }
 
 export default function MemorizeQuizWindow({
+  currIdx,
   difficulty,
   quizSettings,
   requestFullBibleBookName,
+  setCurrIdx,
   setCurrentMemorizeSession,
+  setVerseHistory,
   timerState,
+  verseHistory,
   verseList,
 }: IMemorizeQuizWindow) {
-
-  const [currIdx, setCurrIdx] = useState(0);
-  const [verseHistory, setVerseHistory] = useState<BibleVerse[]>([]);
 
   const uniqueVerseList = useMemo(
     () => { return generateUniqueSetOfVerses(quizSettings, verseList) },  

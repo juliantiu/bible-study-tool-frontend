@@ -6,12 +6,14 @@ interface IWindowManagerContext {
   windows: Window[];
   addWindow: (window: Window) => void;
   removeWindow: () => void;
+  updateWindow: (window: Window) => void;
 }
 
 export const WindowManagerContext = createContext<IWindowManagerContext>({
   windows: [],
   addWindow: () => undefined,
-  removeWindow: () => undefined
+  removeWindow: () => undefined,
+  updateWindow: () => undefined
 });
 
 interface WindowManagerContextProviderProps {
@@ -52,11 +54,28 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
     [setWindows]
   );
 
+  const updateWindow = useCallback(
+    (window: Window) => {
+      setWindows(prev => {
+        const prevCopy = [...prev];
+        let matchingWindowIdx = prevCopy.findIndex(w => w.windowId === window.windowId);
+
+        if (!matchingWindowIdx) return prev;
+        
+        prevCopy[matchingWindowIdx] = {...window};
+        
+        return prevCopy; 
+      });
+    },
+    [setWindows]
+  );
+
   return (
     <WindowManagerContext.Provider
       value={{
         addWindow,
         removeWindow,
+        updateWindow,
         windows
       }}
     >

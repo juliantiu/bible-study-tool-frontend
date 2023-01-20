@@ -4,6 +4,7 @@ import { Button, Col, Form, Modal, Row } from "react-bootstrap";
 import { Window, WindowType } from "../../../types/Windows";
 import useWindowManager from '../../../hooks/useWindowManager';
 import useGlobalFeaturesConfiguration from '../../../hooks/useGlobalfeaturesConfiguration';
+import { DifficultyLevels, TimerStateOptions } from '../../../types/VerseMemorization';
 
 interface INewWindowPopup {
   numWindows: number;
@@ -32,12 +33,44 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
     );
     
   const onAddWindow = () => {
-    const newWindow: Window = {
+
+    let newWindow: any = {
       windowId: numWindows,
       windowType: windowType,
       language: selectedLanguage,
       bibleVersion: selectedBibleVersion
     }
+
+    switch (windowType) {
+      case WindowType.memorize:
+        const currSessiId = (Math.random() + 1).toString(16).substring(2);
+        newWindow = {
+          ...newWindow,
+          currIdx: 0,
+          currentMemorizeSession: {
+            inputVerses: '',
+            memorizeSessionId: currSessiId,
+            memoryVerses: []
+          },
+          currentTimerValues: { hh: 0, mm: 0, ss: 0 },
+          currSessionId: currSessiId,
+          difficulty: DifficultyLevels.fifty,
+          memorizeSessionsHistory: [],
+          quizSettings: 3,
+          referenceTimerValues: { hh: 0, mm: 0, ss: 0 },
+          timerState: TimerStateOptions.stop,
+          verseHistory: [],
+          verseList: [],
+        };
+        break;
+      case WindowType.notes:
+        break;
+      case WindowType.read:
+        break;
+      case WindowType.search:
+        break;
+    }
+
     addWindow(newWindow);
     onClearAndHide();
   }

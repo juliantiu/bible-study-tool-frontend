@@ -119,28 +119,47 @@ function timerFunctionality(
 }
 
 interface IMemorizeTimer {
-  setCurrentSessionId: React.Dispatch<React.SetStateAction<string>>,
+  currentTimerValues: {
+    hh: number;
+    mm: number;
+    ss: number;
+  };
+  referenceTimerValues: {
+    hh: number;
+    mm: number;
+    ss: number;
+  };
+  setCurrentSessionId: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentTimerValues: React.Dispatch<React.SetStateAction<{
+    hh: number;
+    mm: number;
+    ss: number;
+  }>>;
+  setReferenceTimerValues: React.Dispatch<React.SetStateAction<{
+    hh: number;
+    mm: number;
+    ss: number;
+  }>>;
   setTimerState: React.Dispatch<React.SetStateAction<TimerStateOptions>>;
   timerState: TimerStateOptions;
 }
 
 export default function MemorizeCountdown({
+  currentTimerValues,
+  referenceTimerValues,
   setCurrentSessionId,
+  setCurrentTimerValues,
+  setReferenceTimerValues,
   setTimerState,
   timerState
 }: IMemorizeTimer) {
-
-  const [referenceTimerValues, setReferenceTimerValues] =
-    useState({ hh: 0, mm: 0, ss: 0 });
-
-  const [currentTimerValues, setCurrentTimerValues] =
-    useState({ hh: 0, mm: 0, ss: 0 });
 
   const timerObj = useRef();
 
   const onChangeReferenceTimer = (ref: any) => {
     const { name, value } = ref.target;
     setReferenceTimerValues(prev => ({ ...prev, [name]: +value }));
+    setCurrentTimerValues(prev => ({ ...prev, [name]: +value }));
   }
 
   const timerForm =
@@ -224,13 +243,6 @@ export default function MemorizeCountdown({
       );
     setTimerState(state);
   }
-
-  useEffect(
-    () => {
-      setCurrentTimerValues({ ...referenceTimerValues });
-    },
-    [referenceTimerValues]
-  );
 
   useEffect(
     () => {
