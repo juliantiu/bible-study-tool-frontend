@@ -71,10 +71,10 @@ export default function Memorize(memorizeProps: IMemorize) {
   );
 
   return (
-    <div className="h-100"> 
+    <div> 
       <MemorizeNavbar />
       <Container className="content-window" fluid>
-        <Row className="h-100">
+        <Row>
           <Col xs={12} md={8}>
             <Row>
               <Col xs={12}>

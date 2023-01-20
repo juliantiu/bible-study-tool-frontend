@@ -1,10 +1,23 @@
 #memorize-input-verses-container {
-  height: 90px;
+  height: 80px;
   padding: 15px;
   background-color: #FFFFFF;
+
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 }
 
 #memorize-difficulty-container {
+  padding: 0px 15px;
+
+  background-color: #FFFFFF;
+
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
+
+#memorize-settings-container {
   padding: 0px 15px;
 
   background-color: #FFFFFF;

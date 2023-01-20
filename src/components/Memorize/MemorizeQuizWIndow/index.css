@@ -1,9 +1,10 @@
 #memorize-quiz-window-form-container-primary {
   background-color: #FFFFFF;
-  height: calc(100vh - 280px);
-  max-height: calc(100vh - 280px);
+  height: 440px;
   width: 100%;
-  padding: 5px 15px 15px 15px;
+  margin-top: 12px;
+  padding: 15px 15px 15px 15px;
+  border-radius: 20px;
 }
 
 #memorize-quiz-window-form-container-secondary {
