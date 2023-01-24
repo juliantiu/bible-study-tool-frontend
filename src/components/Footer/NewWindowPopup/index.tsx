@@ -5,6 +5,7 @@ import { Window, WindowType } from "../../../types/Windows";
 import useWindowManager from '../../../hooks/useWindowManager';
 import useGlobalFeaturesConfiguration from '../../../hooks/useGlobalfeaturesConfiguration';
 import { DifficultyLevels, TimerStateOptions } from '../../../types/VerseMemorization';
+import { SearchSettingsVerseOrder, SearchType } from '../../../types/Searching';
 
 interface INewWindowPopup {
   numWindows: number;
@@ -68,6 +69,16 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
       case WindowType.read:
         break;
       case WindowType.search:
+        newWindow = {
+          ...newWindow,
+          activeSearchType: SearchType.verses,
+          rawVerseSearch: '',
+          rawKeywordSearch: '',
+          searchSettings: {
+            removeDuplicates: true,
+            verseOrder: SearchSettingsVerseOrder.default
+          }
+        };
         break;
     }
 

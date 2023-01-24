@@ -1,0 +1,55 @@
+#search-display-verses-container-primary {
+  padding: 0px 15px 15px 15px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  background-color: #FFFFFF;
+  position: relative;
+}
+
+#search-display-verses-container-secondary {
+  height: 354.5px;
+  padding: 15px;
+
+  border: 1px solid #DDD;
+
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.search-result-display-verse p  {
+  display: inline;
+  font-size: 20px;
+}
+
+.search-result-display-verse p:nth-child(1)  {
+  font-weight: bold;
+  color: #191970;
+}
+
+.zoom-in-out-button {
+  position: absolute;
+  top: 10px;
+  right: 40px;
+
+  background-color: #191970;
+  color: #FFFFFF;
+
+  height: 50px;
+  width: 50px;
+
+  border-radius: 15px;
+
+  opacity: .8;
+
+  font-size: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: none;
+  border: none;
+}
+
+.zoom-in-out-button:hover {
+  opacity: 1;
+}

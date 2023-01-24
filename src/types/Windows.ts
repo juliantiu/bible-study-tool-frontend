@@ -1,4 +1,5 @@
 import { BibleVerse } from "./BibleContents";
+import { SearchSettings, SearchType } from "./Searching";
 import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOptions } from "./VerseMemorization";
 
 export enum WindowType {
@@ -37,8 +38,11 @@ export interface NotesWindow extends Window {
 }
 
 export interface SearchWindow extends Window {
-  rawSearch: string;
+  rawVerseSearch: string;
+  rawKeywordSearch: string;
   verses: BibleVerse[];
+  searchSettings: SearchSettings;
+  activeSearchType: SearchType;
 }
 
 export interface MemorizeWindow extends Window {

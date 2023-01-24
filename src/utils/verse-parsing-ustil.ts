@@ -1,7 +1,7 @@
 import { VerseRecipeFlags } from "../types/Windows";
 import { BIBLE_BOOK_KEY_MAPPING, BOOKS_WITH_ONE_CHAPTER } from "./static-references-util";
 
-export function extractNumericalValue(currentNumber: string) {
+function extractNumericalValue(currentNumber: string) {
   // strip off book name or punctuiations and just return the number.
   const pattern = /(?!\s?\d+\s[A-Za-z]+\.?\s|[A-Za-z]+\.\s|[A-Za-z]+\s|,\s?|:|\s?-\s?|;\?)(\d+)\s?(?!\s?\w{2}\s?)/g
   const matches = currentNumber.match(pattern);

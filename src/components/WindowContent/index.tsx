@@ -1,6 +1,6 @@
 import { useParams } from 'react-router-dom';
 import useWindowManager from '../../hooks/useWindowManager';
-import { MemorizeWindow, WindowType } from '../../types/Windows';
+import { MemorizeWindow, SearchWindow, WindowType } from '../../types/Windows';
 import Read from '../Read';
 import Memorize from '../Memorize';
 import Search from '../Search';
@@ -16,7 +16,7 @@ export default function WindowContent() {
   return (
     <>
       {currWindow?.windowType === WindowType.read && <Read />}
-      {currWindow?.windowType === WindowType.search && <Search />}
+      {currWindow?.windowType === WindowType.search && <Search currWindow={currWindow as SearchWindow} updateWindow={updateWindow}/>}
       {currWindow?.windowType === WindowType.memorize && <Memorize currWindow={currWindow as MemorizeWindow} updateWindow={updateWindow}/>}
     </>
   );

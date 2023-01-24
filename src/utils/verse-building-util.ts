@@ -7,7 +7,7 @@ const VERSE_RECIPE_VERSE_IDX = 2;
 const VERSE_RECIPE_FLAGS_IDX = 3;
 
 function processDashedVerseRecipe(
-  bibleContents: BibleContents,
+  bibleContents: BibleContents, 
   accumulator: BibleVerse[],
   item: (string | number | undefined)[],
   idx: number,
