@@ -17,6 +17,9 @@ function processDashedVerseRecipe(
   const accumulatorCopy = [...accumulator];
 
   const prevVerseRecipe = arr[idx-1];
+
+  if (prevVerseRecipe === undefined || prevVerseRecipe === null) return accumulatorCopy;
+
   const prevVerseRecipeChap = prevVerseRecipe[VERSE_RECIPE_CHAPTER_IDX] as number;
   const prevVerseRecipeVerse = prevVerseRecipe[VERSE_RECIPE_VERSE_IDX] as number;
 
@@ -57,6 +60,7 @@ function processDashedVerseRecipe(
       // from the starting verse all the way to the end of the chapter
       for (let verse = 0; verse <= numVerses; ++verse) { // j represents verses
 
+        if (chapter === currVerseRecipeChap && !!currVerseRecipeVerse && (verse > currVerseRecipeVerse)) break;
         if (chapter === prevVerseRecipeChap && verse < prevVerseRecipeVerse + 1) continue;
         if (chapterVerses[verse] === undefined || chapterVerses[verse] === null) continue;
 
@@ -131,7 +135,6 @@ function processOneVerseRecipe(
 }
 
 export default function processVerseRecipes(bibleContents: BibleContents, verseRecipes: (string | number | undefined)[][]): BibleVerse[] {
-
   return verseRecipes.reduce(
     (accumulator, item, idx, arr) => {
       const verseRecipe = item[VERSE_RECIPE_FLAGS_IDX] as VerseRecipeFlags;

@@ -17,6 +17,7 @@ function isChapter(currentNumber: string, followingNumber?: string) {
   // if begins with alphanumeric, it's a chapter
   // if begins with , and followed by :, it's a chapter
   // if begins with - and followed by :, it's a chapter
+  // if begins with - and the previous is a whole chapter, it's a chapter
   // if begins with ; and followed by :, it's a chapter
   // if begins with ; and followed by ;, it's a chapter
   // if begins with ; and followed by -, it's a chapter
@@ -84,18 +85,31 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
         const isOneChap = isOneChapter(currentBook);
         currentChapterNumber = extractNumericalValue(item);
 
-        // Trying to prvent entries like Jude 1; 2; 3; 4
-        // Jude is a one chapter book and should not have 4 chapters. 2, 3, and 4 should be ignored.
-        // If:
-        // (1) Book is one chapter
-        // (2) Current contains ; or ,
-        // (3) the next item does not have a comma
-        // => ignore this item
-        // This prevents entries like:
-        // (1) Jude 1; 2; 3; 4 ==> which should ignore 2, 3, and 4 because Jude does not have 4 chapters
-        // (2) Jude 1, 2; 5:3 ===> which should not replace 1:2 with 1:5 nor 1:3
-        if (isOneChap && (item.includes(';') || item.includes(',')) && (arr[idx + 1] === undefined || !(arr[idx + 1].includes(','))))
-          return accumulator;
+        if (isOneChap) {
+
+          // Trying to prvent entries like Jude 1; 2; 3; 4
+          // Jude is a one chapter book and should not have 4 chapters. 2, 3, and 4 should be ignored.
+          // If:
+          // (1) Book is one chapter
+          // (2) Current contains ; or ,
+          // (3) the next item does not have a comma
+          // => ignore this item
+          // This prevents entries like:
+          // (1) Jude 1; 2; 3; 4 ==> which should ignore 2, 3, and 4 because Jude does not have 4 chapters
+          // (2) Jude 1, 2; 5:3 ===> which should not replace 1:2 with 1:5 nor 1:3
+          if ((item.includes(';') || item.includes(',')) && (arr[idx + 1] === undefined || !(arr[idx + 1].includes(','))))
+            return accumulator;
+
+          // Trying to prevent entries like Jude 1-3:5
+          // Jude is one chapter and should ignore 3:5
+          // If:
+          // (1) current item includes -
+          // (2) next item includes : 
+          // => ignore this item
+          if ((item.includes('-')) && arr[idx + 1] !== undefined && arr[idx + 1].includes(':'))
+            return accumulator;
+
+        }
 
         accumulator.push(
           [currentBook,
@@ -131,6 +145,26 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
                 || arr[idx + 1]?.includes(',')
                 || arr[idx + 1]?.includes(';')))
         {
+
+          // In John 1-3, the -3 is interpreted as a verse.
+          // It should be a chapter with a dashed flag.
+          // Hence, if:
+          // (1) criteria from above comments apply
+          // (2) the current item includes a -
+          // => push a new entry to accumulator with the current "verse" as the chapter and dashed as flag
+          if (item.includes('-')) {
+
+            accumulator.push(
+              [currentBook,
+              currentVerse,
+              undefined,
+              VerseRecipeFlags.dashed
+            ]);
+            
+            return accumulator;
+
+          }
+
           return accumulator;
         }
 
@@ -142,15 +176,18 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
         }
 
         if (!!accumulator[prevAccumulatorIdx]) { 
+
           if (
             accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === undefined
               || accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === null
           ) {
+
               accumulator[prevAccumulatorIdx] =
                 [accumulator[prevAccumulatorIdx][0],
                   accumulator[prevAccumulatorIdx][1],
                   currentVerse,
                   item.includes('-') ? VerseRecipeFlags.dashed : isDashedAlready()];
+
           } else {
 
             if (isOneChap && item.includes(':')) {
