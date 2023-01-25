@@ -117,7 +117,7 @@ export default function MemorizeSettings({
                   <Form.Control
                     id="memorize-input-verses-control"
                     as="textarea"
-                    placeholder="Input verses here (ex. Phil. 1:20-2:13; Mark 12:30)"
+                    placeholder="Start typing verse references to display verse text. (i.e. 1 Cor. 15:45; 2 Cor. 3:17, 18; 1 Cor. 6:17; 12:3; Rom. 10:8-10)"
                     style={{ height: '60px' }}
                     onChange={onInputVersesChange}
                     value={inputtedVerses}
