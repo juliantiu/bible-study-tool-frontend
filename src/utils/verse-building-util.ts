@@ -27,6 +27,8 @@ function processDashedVerseRecipe(
   if (prevVerseRecipeChap > currVerseRecipeChap) return accumulatorCopy;
 
   const bibleBookContent = bibleContents[currVerseRecipeBook];
+
+  if (!bibleBookContent) return accumulatorCopy;
   
   const bibleBookContentPrevVerses = bibleBookContent.contents[prevVerseRecipeChap];
   if (!bibleBookContentPrevVerses) return accumulatorCopy;
@@ -45,19 +47,22 @@ function processDashedVerseRecipe(
       accumulatorCopy.push(bibleBookContentPrevVerses[i]);
   
     }
-  } else  {
+  } else if (prevVerseRecipeChap < currVerseRecipeChap) {
 
-    // + 1 because the bibleBookContentPrevVerses[i] has already been handled
-    for (let i = prevVerseRecipeVerse + 1; i <= currVerseRecipeVerse; ++i) {
+    for (let chapter = prevVerseRecipeChap; chapter <= currVerseRecipeChap; ++chapter) { // i represents chapter
+
+      const chapterVerses = bibleBookContent.contents[chapter];
+      const numVerses = Object.keys(chapterVerses).length;
       
-      if (!bibleBookContentPrevVerses[i]) continue;
-      accumulatorCopy.push(bibleBookContentPrevVerses[i]);
-  
-    }
+      // from the starting verse all the way to the end of the chapter
+      for (let verse = 0; verse <= numVerses; ++verse) { // j represents verses
 
-    for (let i = 0; i <= currVerseRecipeVerse; ++i) {
-      if (!bibleBookContentCurrVerses[i]) continue;
-      accumulatorCopy.push(bibleBookContentCurrVerses[i]);
+        if (chapter === prevVerseRecipeChap && verse < prevVerseRecipeVerse + 1) continue;
+        if (chapterVerses[verse] === undefined || chapterVerses[verse] === null) continue;
+
+        accumulatorCopy.push(chapterVerses[verse]);
+      }
+
     }
   }
 

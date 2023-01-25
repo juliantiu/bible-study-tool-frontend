@@ -18,7 +18,7 @@ function isChapter(currentNumber: string, followingNumber?: string) {
   // if begins with , and followed by :, it's a chapter
   // if begins with ; and followed by :, it's a chapter
   // if begins with - and followed by :, it's a chapter
-  const pattern = /(?=\s?)\d+\s[A-Za-z]+\.?\s\d+$|(?=\s?)[A-Za-z]+\.?\s\d+$|;\s?\d+$|,\s?\d+$|-\s?\d+$/g
+  const pattern = /(?=\s?)\d+\s[A-Za-z]+\.?\s\d+\s?$|(?=\s?)[A-Za-z]+\.?\s\d+\s?$|;\s?\d+$|,\s?\d+$|-\s?\d+$/g
   const res = chapterOrVerseEvaluation(pattern, currentNumber); 
   
   const followingIsVerse = 
@@ -47,7 +47,7 @@ function isVerse(currentNumber: string, followingNumber?: string) {
 }
 
 function identifyBook(bookWithNumber: string) {
-  const pattern = /(?=\;?\s?)(\d?\s?[A-Za-z]+\.?)(?=\s\d+)/g;
+  const pattern = /(?=\;?\s?)(\d?\s?[A-Za-z]+\.?|[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+)(?=\s\d+)/g;
   const matches = bookWithNumber.match(pattern);
 
   if (!!matches) {
@@ -66,6 +66,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
   return tokenizedNumbers?.reduce( 
     (accumulator, item, idx, arr) => { 
+
       if (isChapter(item, arr[idx + 1])) {
 
         currentBook = identifyBook(item) ?? currentBook;
@@ -115,7 +116,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
               accumulator.push(
                 [currentBook,
-                  currentChapterNumber,
+                  isOneChap ? 1 : currentChapterNumber,
                   currentVerse,
                   item.includes('-') ? VerseRecipeFlags.dashed : VerseRecipeFlags.oneVerse] 
               );
@@ -132,7 +133,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 }
 
 function tokenizeVerseNumericalValues(rawVerses: string) {
-  const pattern = /(;?\s?\d+\s[A-Za-z]+\.?\s|[A-Za-z]+\.\s|[A-Za-z]+\s|,\s?|:|\s?-\s?|;?\s)(\d+)\s?(?!\s?\w{2}\s?)/g;
+  const pattern = /((?=;?)\s?\d+\s[A-Za-z]+\.?\s|(?=;?)[A-Za-z]+\.?\s|(?=;?)\s?[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+\s|,\s?|:\s?|\s?-\s?|;?\s)(\d+)\s?(?!\s?\w{2}\s?)/g;
   const matches = rawVerses.match(pattern);
 
   return matches;
