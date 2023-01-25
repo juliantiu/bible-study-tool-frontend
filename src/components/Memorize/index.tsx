@@ -131,7 +131,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
   // save window parameters on unmount
   useEffect(
     () => {
-      return () => { updateWindow(memorizeWindow.current!); }
+      return () => { updateWindow(memorizeWindow.current); }
     },
     [memorizeWindow]
   );

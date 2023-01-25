@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
 import useVerseRequester from '../../hooks/useVerseRequester';
 import { BibleVerse } from '../../types/BibleContents';
@@ -72,12 +72,16 @@ interface ISearch {
 export default function Search({ currWindow, updateWindow }: ISearch) {
 
   const { requestFullBibleBookName, requestVerses } = useVerseRequester(currWindow.language, currWindow.bibleVersion);
+  
+  const searchWindow = useRef(currWindow);
+
   const [activeSearchType, setActiveSearchType] = useState<SearchType>(currWindow.activeSearchType);
-  const [inputtedVerses, setInputtedVerses] = useState(currWindow.rawVerseSearch);
   const [inputtedKeywords, setInputtedKeywords] = useState(currWindow.rawKeywordSearch);
-  const [verseList, setVerseList] = useState<BibleVerse[]>([]);
+  const [inputtedVerses, setInputtedVerses] = useState(currWindow.rawVerseSearch);
   const [searchSettings, setSearchSettings] = useState<SearchSettingsType>(currWindow.searchSettings);
+  const [verseList, setVerseList] = useState<BibleVerse[]>(currWindow.verses);
   const [zoom, setZoom] = useState(false);
+
 
   const verses = useMemo(
     () => { 
@@ -85,6 +89,39 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
       return generateOrderedVerses(verses, searchSettings);
     },  
     [searchSettings, verseList]
+  );
+
+  // every time window parameter changes, save it to the search window reference
+  useEffect(
+    () => {
+      searchWindow.current = {
+        activeSearchType,
+        searchSettings,
+        bibleVersion: currWindow.bibleVersion,
+        language: currWindow.language,
+        rawKeywordSearch: inputtedKeywords,
+        rawVerseSearch: inputtedVerses,
+        verses: verseList,
+        windowId: currWindow.windowId,
+        windowType: currWindow.windowType
+      }
+    },
+    [
+      activeSearchType,
+      currWindow,
+      inputtedKeywords,
+      inputtedVerses,
+      searchSettings,
+      verseList,
+    ]
+  );
+
+  // save window parameters on unmount
+  useEffect(
+    () => {
+      return () => { updateWindow(searchWindow.current); }
+    },
+    [searchWindow]
   );
 
   const searchSettingsDisplay = !zoom && (

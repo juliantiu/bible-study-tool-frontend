@@ -77,7 +77,8 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
           searchSettings: {
             removeDuplicates: true,
             verseOrder: SearchSettingsVerseOrder.default
-          }
+          },
+          verses: []
         };
         break;
     }

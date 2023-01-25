@@ -1,6 +1,7 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
 import useGlobalFeaturesConfiguration from "../hooks/useGlobalfeaturesConfiguration";
-import { ReadWindow, Window, WindowType } from '../types/Windows'
+import { SearchSettingsVerseOrder, SearchType } from "../types/Searching";
+import { SearchWindow, Window, WindowType } from '../types/Windows'
 
 interface IWindowManagerContext {
   windows: Window[];
@@ -24,16 +25,20 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
   const { defaultLanguage: language, defaultBibleVersion: bibleVersion } = useGlobalFeaturesConfiguration();
   const [windows, setWindows] = useState<Window[]>(
     () => {
-      const defaultWindow: ReadWindow = {
+      const defaultWindow: SearchWindow = {
         language,
         bibleVersion,
         windowId: 0,
+        windowType: WindowType.search,
 
-        windowType: WindowType.read,
-        bookKey: 'GEN',
-        bookName: 'Genesis',
-        chapterNumber: 1,
-        verseNumber: 1
+        activeSearchType: SearchType.verses,
+        rawVerseSearch: '',
+        rawKeywordSearch: '',
+        searchSettings: {
+          removeDuplicates: true,
+          verseOrder: SearchSettingsVerseOrder.default
+        },
+        verses: []
       };
 
       return [defaultWindow];
@@ -60,7 +65,7 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
         const prevCopy = [...prev];
         let matchingWindowIdx = prevCopy.findIndex(w => w.windowId === window.windowId);
 
-        if (!matchingWindowIdx) return prev;
+        if (matchingWindowIdx < 0) return prev;
         
         prevCopy[matchingWindowIdx] = {...window};
         
