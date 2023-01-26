@@ -82,7 +82,6 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
   const [verseList, setVerseList] = useState<BibleVerse[]>(currWindow.verses);
   const [zoom, setZoom] = useState(false);
 
-
   const verses = useMemo(
     () => { 
       const verses = generateUniqueSetOfVerses(verseList, searchSettings);

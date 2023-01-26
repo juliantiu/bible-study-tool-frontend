@@ -39,9 +39,7 @@ export default function SearchSettings({
   const onInputVersesChange = (elem: any) => {
     const { value } = elem.target;
     setInputtedVerses(value);
-    setVerseList(
-      requestVerses(value)
-    );
+    setVerseList(requestVerses(value));
   };
 
   const onInputKeywordsChange = (elem: any) => {

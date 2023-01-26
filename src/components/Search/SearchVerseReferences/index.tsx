@@ -1,6 +1,7 @@
 import './index.css';
 import { Accordion, Col, Row } from "react-bootstrap";
 import { BibleVerse } from "../../../types/BibleContents";
+import { VerseRecipeFlags } from '../../../types/Windows';
 
 interface ISearchVerseReferences {
   requestFullBibleBookName: (keyword: string) => string;
@@ -8,7 +9,7 @@ interface ISearchVerseReferences {
 }
 
 export default function SearchVerseReferences({ requestFullBibleBookName, verses }: ISearchVerseReferences) {
-
+  
   const displayVerseRefs = verses.reduce(
     (result, v, idx, arr) => {
 
@@ -16,9 +17,14 @@ export default function SearchVerseReferences({ requestFullBibleBookName, verses
         // check if the verse before is the same book and chapter
         const prevVerse = arr[idx-1];
 
+        const sameBook =
+          prevVerse.bibleBook === v.bibleBook;
+
+        const sameChapter =
+          prevVerse.bookChapter === v.bookChapter;
+
         const sameBookSameChapter =
-          prevVerse.bibleBook === v.bibleBook
-          && prevVerse.bookChapter === v.bookChapter;
+          sameBook && sameChapter;
 
         if (sameBookSameChapter) {
 
@@ -36,6 +42,8 @@ export default function SearchVerseReferences({ requestFullBibleBookName, verses
 
           return result + `, ${v.chapterVerseNumber}`
 
+        } else if (sameBook) {
+          return result + `; ${v.bookChapter}:${v.chapterVerseNumber}`;
         }
       }
 
@@ -50,7 +58,7 @@ export default function SearchVerseReferences({ requestFullBibleBookName, verses
         <div id="search-verse-reference-container-primary">
           <Accordion>
             <Accordion.Item eventKey="0">
-              <Accordion.Header>Identified verses</Accordion.Header>
+              <Accordion.Header>Identified verses ({verses.length})</Accordion.Header>
               <Accordion.Body>
                 {displayVerseRefs}
               </Accordion.Body>

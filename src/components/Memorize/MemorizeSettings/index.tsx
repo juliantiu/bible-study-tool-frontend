@@ -33,9 +33,7 @@ export default function MemorizeSettings({
   const onInputVersesChange = (elem: any) => {
     const { value } = elem.target;
     setInputtedVerses(value);
-    setVerseList(
-      requestVerses(value)
-    );
+    setVerseList(requestVerses(value));
     setCurrentMemorizeSession(
       prev => { 
         prev.inputVerses = value
