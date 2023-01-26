@@ -34,6 +34,7 @@ function Layout() {
   return (
     <>
       <Routes>
+        <Route index element={<WindowContent />} />
         <Route path="window/:windowId/:windowType" element={<WindowContent />}>
         </Route>
       </Routes>
