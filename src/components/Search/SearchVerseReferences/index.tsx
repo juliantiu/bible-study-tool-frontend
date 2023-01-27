@@ -39,7 +39,9 @@ function isConsecutiveVerse(verse: BibleVerse, consecutiveVerseTracker: Consecut
 
     } else {
 
-      if(isPrevVerseLastVerseInChapter(consecutiveVerseTracker, bibleContents))
+      if(verse.bookChapter - consecutiveVerseTracker.currentChapter === 1
+          && isPrevVerseLastVerseInChapter(consecutiveVerseTracker, bibleContents))
+          
         // if the previous verse is the last verse in the previous chapter and the current verse is the first verse of the next chapter, then true;
         return verse.chapterVerseNumber === 1;
 
