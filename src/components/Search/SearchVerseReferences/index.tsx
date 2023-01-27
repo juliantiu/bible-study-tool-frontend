@@ -14,7 +14,8 @@ function isPrevVerseLastVerseInChapter(consecutiveVerseTracker: ConsecutiveVerse
 
   if (!versesInChapter) return false;
 
-  const lastVerseInChapter = versesInChapter[verse]?.chapterVerseNumber;
+  let lastVerseInChapter = Object.keys(versesInChapter).length;
+  lastVerseInChapter = versesInChapter[lastVerseInChapter]?.chapterVerseNumber;
 
   return verse === lastVerseInChapter;
 

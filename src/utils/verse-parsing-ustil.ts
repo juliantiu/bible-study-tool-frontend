@@ -57,13 +57,14 @@ function isVerse(currentNumber: string, followingNumber?: string) {
   // if has comma, and not followed by :, it's a verse
   // if has -, and not followed by :, it's a verse
   // if has :, then verse
-  const pattern = /[,:-]\s?\d+/g;
-  return chapterOrVerseEvaluation(pattern, currentNumber)
-    && !followingNumber?.includes(':');
+  const pattern = /[,:-]\s*\d+/g;
+  return (chapterOrVerseEvaluation(pattern, currentNumber)
+      && !followingNumber?.includes(':'))
+    || currentNumber.includes(':');
 }
 
 function identifyBook(bookWithNumber: string) {
-  const pattern = /(?=\;?\s?)(\d?\s?[A-Za-z]+\.?|[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+)(?=\s\d+)/g;
+  const pattern = /(?=;?\s?)(\d?\s?[A-Za-z]+\.?|[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+)(?=\s\d+)/g;
   const matches = bookWithNumber.match(pattern);
 
   if (!!matches) {
@@ -80,9 +81,10 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
   const VERSE_RECIPE_FLAG_IDX = 3;
   let currentBook: string | undefined | null = '';
   let currentChapterNumber = 1;
+  let oneChapVerse = 0;
 
   return tokenizedNumbers?.reduce( 
-    (accumulator, item, idx, arr) => { 
+    (accumulator, item, idx, arr) => {
 
       if (isChapter(item, arr[idx + 1])) {
               
@@ -98,34 +100,50 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
         if (isOneChap) {
 
-          // Trying to prvent entries like Jude 1; 2; 3; 4
-          // Jude is a one chapter book and should not have 4 chapters. 2, 3, and 4 should be ignored.
-          // If:
-          // (1) Book is one chapter
-          // (2) Current contains ; or ,
-          // (3) the next item does not have a comma
-          // => ignore this item
-          // This prevents entries like:
-          // (1) Jude 1; 2; 3; 4 ==> which should ignore 2, 3, and 4 because Jude does not have 4 chapters
-          // (2) Jude 1, 2; 5:3 ===> which should not replace 1:2 with 1:5 nor 1:3
-          if ((item.includes(';') || item.includes(',')) && (arr[idx + 1] === undefined || !(arr[idx + 1].includes(','))))
-            return accumulator;
+          // (TASK) Trying to prevent entries that have chapters > 1, like Jude 1, 2, 3, 4:5 ==> should ignore 4:5
+          if (currentChapterNumber > 1 && (arr[idx + 1]?.includes(':') || item.includes(';'))) {
 
-          // Trying to prevent entries like Jude 1-3:5
-          // Jude is one chapter and should ignore 3:5
-          // If:
-          // (1) current item includes -
-          // (2) next item includes : 
-          // => ignore this item
-          if ((item.includes('-')) && arr[idx + 1] !== undefined && arr[idx + 1].includes(':'))
-            return accumulator;
+            oneChapVerse = 0;
+
+          } else {
+
+            oneChapVerse = currentChapterNumber;
+            currentChapterNumber = 1;
+
+
+            if (currentChapterNumber >= 1 && (arr[idx + 1] === undefined || arr[idx + 1]?.includes(','))) {
+
+              accumulator.push(
+                [currentBook!,
+                  currentChapterNumber,
+                  oneChapVerse, 
+                  VerseRecipeFlags.oneVerse]);
+
+              return accumulator;
+
+            } else if (currentChapterNumber >= 1 && arr[idx + 1]?.includes('-')) {
+              
+              accumulator.push(
+                [currentBook!,
+                  currentChapterNumber,
+                  oneChapVerse, 
+                  VerseRecipeFlags.oneVerse]);
+
+            }
+
+          }
+          // END (TASK)
+
+        } else {
+
+          oneChapVerse = 0;
 
         }
 
         accumulator.push(
           [currentBook!,
-            isOneChap ? 1 : currentChapterNumber,
-            isOneChap ? currentChapterNumber : undefined, // if one chapter, currentChapterNumber actually represents the verse
+            currentChapterNumber,
+            undefined,
             isOneChap ? VerseRecipeFlags.oneVerse
               : item.includes('-')
                 ? VerseRecipeFlags.dashed
@@ -190,9 +208,9 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
           if (
             accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === undefined
-              || accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === null
-          ) {
-
+            || accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === null
+            ) {
+      
               accumulator[prevAccumulatorIdx] =
                 [accumulator[prevAccumulatorIdx][0],
                   accumulator[prevAccumulatorIdx][1],
@@ -201,14 +219,18 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
           } else {
 
-            if (isOneChap && item.includes(':')) {
-              
-              // With Jude 1, 2, 5:3, trying to prevent 1:2 from being replaced to 1:3
-              if (idx > 0 && !(arr[idx - 1].includes('1'))) {
-                return accumulator;
-              }
+            
+            if (isOneChap && oneChapVerse < 1) {
 
-              accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] =  currentVerse;
+              return accumulator;
+
+            } else if (isOneChap && item.includes(':')) {
+
+              if (accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] === undefined) {
+
+                accumulator[prevAccumulatorIdx][VERSE_RECIPE_VERSE_IDX] = currentVerse;
+
+              } 
 
             } else {
 
@@ -231,7 +253,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 }
 
 function tokenizeVerseNumericalValues(rawVerses: string) {
-  const pattern = /((?=;?)\s?\d+\s[A-Za-z]+\.?\s|(?=;?)[A-Za-z]+\.?\s|(?=;?)\s?[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+\s|,\s?|:\s?|\s?-\s?|;?\s?)(\d+)\s?(?!\s?\w{2}\s?)/g;
+  const pattern = /((?=;?)\s?\d+\s[A-Za-z]+\.?\s|(?=;?)[A-Za-z]+\.?\s|(?=;?)\s?[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+\s|,\s*|:\s*|\s*-\s*|;?\s*)(\d+)\s?(?!\s?\w{2}\s?)/g;
   const matches = rawVerses.match(pattern);
 
   return matches;

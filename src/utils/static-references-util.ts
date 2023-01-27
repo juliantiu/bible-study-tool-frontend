@@ -222,6 +222,7 @@ export const BIBLE_BOOK_KEY_MAPPING = new Map<string, string>([
 
  ['obadiah', 'OBAD'],
  ['obad', 'OBAD'],
+ ['oba', 'OBAD'],
  ['ob', 'OBAD'],
 
  ['jonah', 'JONAH'],
@@ -315,10 +316,12 @@ export const BIBLE_BOOK_KEY_MAPPING = new Map<string, string>([
 
  ['1thessalonians', '1THESS'],
  ['1thess', '1THESS'],
+ ['1thes', '1THESS'],
  ['1th', '1THESS'],
 
  ['2thessalonians', '2THESS'],
  ['2thess', '2THESS'],
+ ['2thes', '1THESS'],
  ['2th', '2THESS'],
 
  ['1timothy', '1TIM'],
@@ -334,6 +337,7 @@ export const BIBLE_BOOK_KEY_MAPPING = new Map<string, string>([
  ['ti', 'TITUS'],
 
  ['philemon', 'PHLM'],
+ ['philem', 'PHLM'],
  ['phlm', 'PHLM'],
  ['phm', 'PHLM'],
  ['pm', 'PHLM'],
