@@ -9,11 +9,13 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  useNavigate,
 } from "react-router-dom";
 
 import { VerseRequesterContextProvider } from './contexts/verse-requester';
 import { WindowManagerContextProvider } from './contexts/window-manager';
 import WindowContent from './components/WindowContent';
+import { useEffect } from 'react';
 
 // function Layout() {
 //   return (
@@ -30,11 +32,27 @@ import WindowContent from './components/WindowContent';
 //   );
 //  }
 
+function DummyComponent() {
+
+  const navigate = useNavigate();
+
+  useEffect(
+    () => {
+      navigate('/window/1/search');
+    },
+    [navigate]
+  );
+
+  return (
+    <></>
+  );
+}
+
 function Layout() {
   return (
     <>
       <Routes>
-        <Route index element={<WindowContent />} />
+        <Route index element={<DummyComponent />} />
         <Route path="window/:windowId/:windowType" element={<WindowContent />}>
         </Route>
       </Routes>
