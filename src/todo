@@ -2,5 +2,5 @@
 // (DONE) Inputting John 1; 2; 3 in the search input will not include chapters 2 and 3. Not sure if to include them yet...
 // (DONE) Inputting John 1-3 in the search input will not include 
 // (DONE) Jude 1-5:2 results in Jude 1:1 and 1:5. It should be Jude 1 only
-// In search identified verses, combine consecutive verses with "-" including consecutive chapters
+// (DONE) In search identified verses, combine consecutive verses with "-" including consecutive chapters
 // Be able to show verses from a span of chapters, i.e. Philippians 1-Colossians 1

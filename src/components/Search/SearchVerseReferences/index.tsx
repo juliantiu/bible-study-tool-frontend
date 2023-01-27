@@ -1,56 +1,166 @@
 import './index.css';
 import { Accordion, Col, Row } from "react-bootstrap";
-import { BibleVerse } from "../../../types/BibleContents";
-import { VerseRecipeFlags } from '../../../types/Windows';
+import { BibleContents, BibleVerse } from "../../../types/BibleContents";
+import { ConsecutiveVerseTracker } from '../../../types/Searching';
+import { useMemo } from 'react';
+
+function isPrevVerseLastVerseInChapter(consecutiveVerseTracker: ConsecutiveVerseTracker, bibleContents: BibleContents) {
+
+  const book = consecutiveVerseTracker.book;
+  const chapter = consecutiveVerseTracker.currentChapter;
+  const verse = consecutiveVerseTracker.currentVerse;
+
+  const versesInChapter: BibleVerse[] = (bibleContents as any)?.[book]?.contents?.[chapter]; 
+
+  if (!versesInChapter) return false;
+
+  const lastVerseInChapter = versesInChapter[verse]?.chapterVerseNumber;
+
+  return verse === lastVerseInChapter;
+
+}
+
+const isCurrVerseTheNextVerseInSameChapter = (verse: BibleVerse, consecutiveVerseTracker: ConsecutiveVerseTracker) => 
+  verse.chapterVerseNumber - consecutiveVerseTracker.currentVerse === 1;
+
+const isSameBook = (verseBook: string, book: string) =>
+verseBook === book;
+
+const isSameChapter = (verseChapter: number, chapter: number) => 
+verseChapter === chapter;
+
+function isConsecutiveVerse(verse: BibleVerse, consecutiveVerseTracker: ConsecutiveVerseTracker, bibleContents: BibleContents) {
+
+  if (isSameBook(verse.bibleBook, consecutiveVerseTracker.book)) {
+
+    if (isSameChapter(verse.bookChapter, consecutiveVerseTracker.currentChapter)) {
+
+      return isCurrVerseTheNextVerseInSameChapter(verse, consecutiveVerseTracker);
+
+    } else {
+
+      if(isPrevVerseLastVerseInChapter(consecutiveVerseTracker, bibleContents))
+        // if the previous verse is the last verse in the previous chapter and the current verse is the first verse of the next chapter, then true;
+        return verse.chapterVerseNumber === 1;
+
+    }
+  }
+
+  return false;
+}
 
 interface ISearchVerseReferences {
+  bibleContents: BibleContents;
   requestFullBibleBookName: (keyword: string) => string;
   verses: BibleVerse[];
 }
 
-export default function SearchVerseReferences({ requestFullBibleBookName, verses }: ISearchVerseReferences) {
+export default function SearchVerseReferences({ bibleContents, requestFullBibleBookName, verses }: ISearchVerseReferences) {
+
+  let consecutiveVerseTracker: ConsecutiveVerseTracker = {
+    book: '',
+    currentChapter: 0,
+    currentVerse: 0,
+    firstChapter: 0,
+    firstVerse: 0,
+    consecutiveCounter: 0
+  };
   
-  const displayVerseRefs = verses.reduce(
-    (result, v, idx, arr) => {
+  const displayVerseRefs = useMemo(
+    () => {
 
-      if (idx > 0) {
-        // check if the verse before is the same book and chapter
-        const prevVerse = arr[idx-1];
+      let res = verses.reduce(
+          (result, verse, idx) => {
+      
+            if (isConsecutiveVerse(verse, consecutiveVerseTracker, bibleContents)) {
 
-        const sameBook =
-          prevVerse.bibleBook === v.bibleBook;
+              const lastIndexOfDash = result.lastIndexOf('-');
+                                
+              if (isSameChapter(verse.bookChapter, consecutiveVerseTracker.firstChapter)) {
 
-        const sameChapter =
-          prevVerse.bookChapter === v.bookChapter;
+                // + 1 counting where the dash would be.
+                // ex. Psalm 119:111-112 => dash is 4th from end.
+                const lengthOfMaxPossibleGapBeforeDash_A = consecutiveVerseTracker.currentVerse.toString().length + 1;
+                const lengthOfMaxPossibleGapBeforeDash_B = verse.chapterVerseNumber.toString().length + 1;
+                const lengthOfMaxPossibleGapBeforeDash = Math.max(lengthOfMaxPossibleGapBeforeDash_A, lengthOfMaxPossibleGapBeforeDash_B);
 
-        const sameBookSameChapter =
-          sameBook && sameChapter;
+                // Only slice when the last index of dash is lengthOfMaxPossibleGapBeforeDash away from the end
+                if (result.length - lastIndexOfDash <= lengthOfMaxPossibleGapBeforeDash) {
+                  result = result.slice(0, lastIndexOfDash);
+                }
 
-        if (sameBookSameChapter) {
+                result += `-${verse.chapterVerseNumber}`;
 
-          if (v.chapterVerseNumber - prevVerse.chapterVerseNumber === 1) {
+              } else {
 
-            const lastIndexOfDash = result.lastIndexOf('-'); 
+                // + 2 counting colon and where the dash would be.
+                // ex. Phil 1:1-3:21 =>dash is 5th from the end.
+                const lengthOfMaxPossibleGapBeforeDash_A = consecutiveVerseTracker.currentChapter.toString().length + consecutiveVerseTracker.currentVerse.toString().length + 2;
+                const lengthOfMaxPossibleGapBeforeDash_B = verse.bookChapter.toString().length + verse.chapterVerseNumber.toString().length + 2;
+                const lengthOfMaxPossibleGapBeforeDash = Math.max(lengthOfMaxPossibleGapBeforeDash_A, lengthOfMaxPossibleGapBeforeDash_B);
 
-            /// <= 4 because last verse cane be three digits,  
-            if ((lastIndexOfDash > 0) && (result.length - lastIndexOfDash <= 4))
-              return result.slice(0, lastIndexOfDash) + `-${v.chapterVerseNumber}`;
+                // Only slice when the last index of dash is lengthOfMaxPossibleGapBeforeDash away from the end
+                if (result.length - lastIndexOfDash <= lengthOfMaxPossibleGapBeforeDash) {
+                  result = result.slice(0, lastIndexOfDash);
+                }
 
-            return result + `-${v.chapterVerseNumber}`;
+                result += `-${verse.bookChapter}:${verse.chapterVerseNumber}`;
 
-          }
+              }
 
-          return result + `, ${v.chapterVerseNumber}`
+              consecutiveVerseTracker = {
+                ...consecutiveVerseTracker,
+                consecutiveCounter: consecutiveVerseTracker.consecutiveCounter + 1,
+                currentChapter: verse.bookChapter,
+                currentVerse: verse.chapterVerseNumber
+              }
+      
+              return result;
+      
+            } else {
 
-        } else if (sameBook) {
-          return result + `; ${v.bookChapter}:${v.chapterVerseNumber}`;
-        }
-      }
+              if (isSameBook(verse.bibleBook, consecutiveVerseTracker.book)) {
 
-      return result + `${idx === 0 ? '' : '; '}${requestFullBibleBookName(`${v.bibleBook} ${v.bookChapter}:${v.chapterVerseNumber}`)}`
+                if (isSameChapter(verse.bookChapter, consecutiveVerseTracker.firstChapter)) {
+
+                  result += `, ${verse.chapterVerseNumber}`;
+
+                } else {
+
+                  result += `; ${verse.bookChapter}:${verse.chapterVerseNumber}`;
+
+                }
+
+              } else {
+
+                result += `${idx < 1 ? '' : '; '}${requestFullBibleBookName(verse.bibleBook)} ${verse.bookChapter}:${verse.chapterVerseNumber}`;
+
+              }
+      
+              consecutiveVerseTracker = {
+                book: verse.bibleBook,
+                firstChapter: verse.bookChapter,
+                firstVerse: verse.chapterVerseNumber,
+                consecutiveCounter: 0,
+                currentChapter: verse.bookChapter,
+                currentVerse: verse.chapterVerseNumber
+              }
+      
+            }
+      
+            return result;
+          },
+          ''
+        );
+
+      return res;
+
     },
-    ''
+    [bibleContents, verses]
   );
+  
+  
+  
 
   return (
     <Row>

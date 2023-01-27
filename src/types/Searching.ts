@@ -13,3 +13,12 @@ export enum SearchType {
   verses,
   keywords
 }
+
+export interface ConsecutiveVerseTracker {
+  book: string;
+  firstChapter: number;
+  firstVerse: number;
+  currentChapter: number;
+  currentVerse: number;
+  consecutiveCounter: number;
+}

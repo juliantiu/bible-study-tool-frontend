@@ -65,5 +65,5 @@ export default function useVerseRequester(language: string, bibleVersion: string
     [bibleContents]
   );
 
-  return { requestFullBibleBookName, requestVerses };
+  return { bibleContents, requestFullBibleBookName, requestVerses };
 }

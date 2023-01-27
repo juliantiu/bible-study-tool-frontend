@@ -71,7 +71,7 @@ interface ISearch {
 
 export default function Search({ currWindow, updateWindow }: ISearch) {
 
-  const { requestFullBibleBookName, requestVerses } = useVerseRequester(currWindow.language, currWindow.bibleVersion);
+  const { bibleContents, requestFullBibleBookName, requestVerses } = useVerseRequester(currWindow.language, currWindow.bibleVersion);
   
   const searchWindow = useRef(currWindow);
 
@@ -146,6 +146,7 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
     <Row>
       <Col xs={12}>
         <SearchVerseReferences
+          bibleContents={bibleContents}
           requestFullBibleBookName={requestFullBibleBookName}
           verses={verses}
         />
