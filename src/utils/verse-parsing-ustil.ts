@@ -73,16 +73,22 @@ function identifyBook(bookWithNumber: string) {
 function buildVerseRecipes(tokenizedNumbers: string[]) {
   const VERSE_RECIPE_VERSE_IDX = 2; 
   const VERSE_RECIPE_FLAG_IDX = 3;
-  let currentBook = '';
+  let currentBook: string | undefined | null = '';
   let currentChapterNumber = 1;
 
   return tokenizedNumbers?.reduce( 
     (accumulator, item, idx, arr) => { 
 
-      
-      if (isChapter(item, arr[idx + 1])) {      
-        currentBook = identifyBook(item) ?? currentBook;
-        const isOneChap = isOneChapter(currentBook);
+      if (isChapter(item, arr[idx + 1])) {
+              
+        const identifiedBook = identifyBook(item);
+
+        if (!!identifiedBook) currentBook = identifiedBook;
+
+        if (identifiedBook === undefined)
+          currentBook = '';
+
+        const isOneChap = isOneChapter(currentBook!);
         currentChapterNumber = extractNumericalValue(item);
 
         if (isOneChap) {
@@ -112,7 +118,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
         }
 
         accumulator.push(
-          [currentBook,
+          [currentBook!,
             isOneChap ? 1 : currentChapterNumber,
             isOneChap ? currentChapterNumber : undefined, // if one chapter, currentChapterNumber actually represents the verse
             isOneChap ? VerseRecipeFlags.oneVerse
@@ -123,7 +129,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
 
       } else if (isVerse(item, arr[idx + 1])) {
 
-        const isOneChap = isOneChapter(currentBook);
+        const isOneChap = isOneChapter(currentBook!);
         const prevAccumulatorIdx = accumulator.length - 1;
         const currentVerse = extractNumericalValue(item);
 
@@ -155,7 +161,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
           if (item.includes('-')) {
 
             accumulator.push(
-              [currentBook,
+              [currentBook!,
               currentVerse,
               undefined,
               VerseRecipeFlags.dashed
@@ -202,7 +208,7 @@ function buildVerseRecipes(tokenizedNumbers: string[]) {
             } else {
 
               accumulator.push(
-                [currentBook,
+                [currentBook!,
                   isOneChap ? 1 : currentChapterNumber,
                   currentVerse,
                   item.includes('-') ? VerseRecipeFlags.dashed : VerseRecipeFlags.oneVerse] 
