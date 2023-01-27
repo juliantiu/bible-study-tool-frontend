@@ -22,7 +22,7 @@ function isChapter(currentNumber: string, followingNumber?: string) {
   // if begins with ; and followed by ;, it's a chapter
   // if begins with ; and followed by -, it's a chapter
   const pattern = /(?=\s?)\d+\s[A-Za-z]+\.?\s\d+\s?$|(?=\s?)[A-Za-z]+\.?\s\d+\s?$|;\s?\d+$|,\s?\d+$|-\s?\d+$/g
-  const res = chapterOrVerseEvaluation(pattern, currentNumber); 
+  const res = chapterOrVerseEvaluation(pattern, currentNumber);
   
   let followingMaybeIsVerse = 
     currentNumber.includes(',') || currentNumber.includes('-');
@@ -31,10 +31,15 @@ function isChapter(currentNumber: string, followingNumber?: string) {
     return res && followingNumber?.includes(':');
   }
 
-  followingMaybeIsVerse = currentNumber.includes(';')
+  followingMaybeIsVerse = currentNumber.includes(';');
 
   if (followingMaybeIsVerse) {
-    return res && (followingNumber?.includes(':')
+
+    // This checks if the following item contains a book name
+    const r = new RegExp(/((?=;?\s?)\d+\s[A-Za-z]+\.?\s|(?=;?\s?)[A-Za-z]+\.?\s|(?=;?\s?)[A-Za-z]+\s[A-Za-z]+\s[A-Za-z]+\s)/g);
+
+    return res && (r?.test(followingNumber ?? '')
+                    || followingNumber?.includes(':')
                     || followingNumber?.includes(';')
                     || followingNumber?.includes('-')
                     || followingNumber?.includes(',')
