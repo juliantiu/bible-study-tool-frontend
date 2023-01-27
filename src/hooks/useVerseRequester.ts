@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { BibleBook, BibleContents } from "../types/BibleContents";
+import { BibleContents } from "../types/BibleContents";
 import { generateBibleBookDirPath } from "../utils/file-systems-util";
 import { normalizeBibleBookName, processRawVerses } from "../utils/verse-parsing-ustil";
 import { BIBLE_BOOK_KEYS, BIBLE_BOOK_KEY_MAPPING } from "../utils/static-references-util";
@@ -10,14 +10,14 @@ export default function useVerseRequester(language: string, bibleVersion: string
   
   useEffect(
     () => {
-      language = language ?? 'eng';
-      bibleVersion = bibleVersion ?? 'recovery_version';
+      const languageCopy = language ?? 'eng';
+      const bibleVersionCopy = bibleVersion ?? 'recovery_version';
 
       const loadBibleData = async () => {
         const contents: BibleContents = {};
         for (const key of BIBLE_BOOK_KEYS) {
           try {
-            const folder = generateBibleBookDirPath(language, bibleVersion, key);
+            const folder = generateBibleBookDirPath(languageCopy, bibleVersionCopy, key);
             const importedFile = await (await fetch(`${process.env.PUBLIC_URL}/bibles/${folder}`,
               { headers : { 
                 'Content-Type': 'application/json',
@@ -36,7 +36,7 @@ export default function useVerseRequester(language: string, bibleVersion: string
   
       loadBibleData();
     },
-    [setBibleContents]
+    [bibleVersion, language, setBibleContents]
   );
 
   const requestVerses = useCallback(
@@ -44,7 +44,7 @@ export default function useVerseRequester(language: string, bibleVersion: string
       const verseRecipes = processRawVerses(rawVerses);
       return processVerseRecipes(bibleContents, verseRecipes);
     },
-    [bibleContents, processRawVerses, processVerseRecipes]
+    [bibleContents]
   );
 
   const requestFullBibleBookName = useCallback(

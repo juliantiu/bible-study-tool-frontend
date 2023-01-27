@@ -6,7 +6,7 @@ import Memorize from '../Memorize';
 import Search from '../Search';
 
 export default function WindowContent() {
-  const { windowId } = useParams();
+  const { windowId } = useParams(); 
   const { windows, updateWindow } = useWindowManager();
   
   const currWindow = windows.find(window => { 

@@ -120,14 +120,13 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
     () => {
       return () => { updateWindow(searchWindow.current); }
     },
-    [searchWindow]
+    [searchWindow, updateWindow]
   );
 
   const searchSettingsDisplay = !zoom && (
     <Row>
       <Col xs={12}>
         <SearchSettings
-          activeSearchType={activeSearchType}
           inputtedKeywords={inputtedKeywords}
           inputtedVerses={inputtedVerses}
           requestVerses={requestVerses}

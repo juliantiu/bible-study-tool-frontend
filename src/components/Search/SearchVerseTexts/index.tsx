@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 
 interface ISearchVerseTexts {
   requestFullBibleBookName: (keyword: string) => string;
-  setZoom: React.Dispatch<React.SetStateAction<boolean>>;
+  setZoom: React.Dispatch<React.SetStateAction<boolean>>; 
   verses: BibleVerse[];
   zoom: boolean;
 }

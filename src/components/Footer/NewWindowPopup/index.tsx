@@ -1,7 +1,7 @@
 import './index.css';
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { Window, WindowType } from "../../../types/Windows";
+import { WindowType } from "../../../types/Windows";
 import useWindowManager from '../../../hooks/useWindowManager';
 import useGlobalFeaturesConfiguration from '../../../hooks/useGlobalfeaturesConfiguration';
 import { DifficultyLevels, TimerStateOptions } from '../../../types/VerseMemorization';
@@ -138,7 +138,7 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
       
       return <option>Select</option>;
     },
-    [languageAndBibleVersionList, languageOptions]
+    [languageAndBibleVersionList, selectedLanguage]
   );
 
   return (

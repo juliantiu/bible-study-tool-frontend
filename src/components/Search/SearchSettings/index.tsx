@@ -1,13 +1,11 @@
 import './index.css';
 import { Col, Form, Nav, Row } from "react-bootstrap";
 import Tab from 'react-bootstrap/Tab';
-import Tabs from 'react-bootstrap/Tabs';
 import { BibleVerse } from "../../../types/BibleContents";
 import { SearchSettings as SearchSettingsType, SearchSettingsVerseOrder, SearchType } from '../../../types/Searching';
 import { useCallback } from 'react';
 
 interface ISearchSettings {
-  activeSearchType: SearchType;
   inputtedKeywords: string;
   inputtedVerses: string;
   requestVerses: (rawVerses: string) => BibleVerse[];
@@ -20,7 +18,6 @@ interface ISearchSettings {
 }
 
 export default function SearchSettings({
-  activeSearchType,
   inputtedKeywords,
   inputtedVerses,
   requestVerses,

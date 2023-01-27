@@ -32,7 +32,7 @@ export function AuthContextProvider({ children }: AuthContextProviderProps) {
       []
     );
 
-  const register = useCallback(
+  const register = useCallback( 
     () => {
       console.log('register');
     },

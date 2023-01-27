@@ -8,7 +8,7 @@ function isPrevVerseLastVerseInChapter(consecutiveVerseTracker: ConsecutiveVerse
 
   const book = consecutiveVerseTracker.book;
   const chapter = consecutiveVerseTracker.currentChapter;
-  const verse = consecutiveVerseTracker.currentVerse;
+  const verse = consecutiveVerseTracker.currentVerse; 
 
   const versesInChapter: BibleVerse[] = (bibleContents as any)?.[book]?.contents?.[chapter]; 
 
@@ -58,18 +58,18 @@ interface ISearchVerseReferences {
 }
 
 export default function SearchVerseReferences({ bibleContents, requestFullBibleBookName, verses }: ISearchVerseReferences) {
-
-  let consecutiveVerseTracker: ConsecutiveVerseTracker = {
-    book: '',
-    currentChapter: 0,
-    currentVerse: 0,
-    firstChapter: 0,
-    firstVerse: 0,
-    consecutiveCounter: 0
-  };
   
   const displayVerseRefs = useMemo(
     () => {
+
+      let consecutiveVerseTracker: ConsecutiveVerseTracker = {
+        book: '',
+        currentChapter: 0,
+        currentVerse: 0,
+        firstChapter: 0,
+        firstVerse: 0,
+        consecutiveCounter: 0
+      };
 
       let res = verses.reduce(
           (result, verse, idx) => {
@@ -158,7 +158,7 @@ export default function SearchVerseReferences({ bibleContents, requestFullBibleB
       return res;
 
     },
-    [bibleContents, verses]
+    [bibleContents, requestFullBibleBookName, verses]
   );
   
   

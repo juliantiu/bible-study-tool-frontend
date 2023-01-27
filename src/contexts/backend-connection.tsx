@@ -3,7 +3,7 @@ import { createContext, ReactNode } from "react";
 interface IBackendConnectionContext {
   domain: string;
   port: string;
-  protocol: string;
+  protocol: string; 
 }
 
 export const BackendConnectionContext = createContext<IBackendConnectionContext>({

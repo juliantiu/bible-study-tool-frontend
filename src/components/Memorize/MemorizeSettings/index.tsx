@@ -1,5 +1,5 @@
 import './index.css'
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { BibleVerse } from '../../../types/BibleContents';
 import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOptions } from '../../../types/VerseMemorization';

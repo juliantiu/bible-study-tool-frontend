@@ -9,7 +9,7 @@ import { MemorizeWindow, Window } from '../../types/Windows';
 import useVerseRequester from '../../hooks/useVerseRequester';
 import { useEffect, useRef, useState } from 'react';
 import { BibleVerse } from '../../types/BibleContents';
-import { DifficultyLevels, MemorizeSession, TimerStateOptions } from '../../types/VerseMemorization';
+import { MemorizeSession, TimerStateOptions } from '../../types/VerseMemorization';
 
 interface IMemorize {
   currWindow: MemorizeWindow;
@@ -77,7 +77,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
         memoryVerses: [] // this will update and refresh when you remount, and memory verses will be back to [] instead of what is in currWindow.
       }));
     },
-    [currSessionId, setCurrentMemorizeSession]
+    [currSessionId, currWindow.currSessionId, setCurrentMemorizeSession]
   );
 
   // every time window parameter changes, save it to the memorize window reference
@@ -133,7 +133,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
     () => {
       return () => { updateWindow(memorizeWindow.current); }
     },
-    [memorizeWindow]
+    [memorizeWindow, updateWindow]
   );
 
   return (

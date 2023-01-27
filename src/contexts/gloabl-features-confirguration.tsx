@@ -1,5 +1,5 @@
 import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
-import { PublicLanguage } from "../types/BibleContents";
+import { PublicLanguage } from "../types/BibleContents"; 
 
 
 interface IGlobalFeaturesConfigurationContext {

@@ -12,7 +12,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import { VerseRequesterContextProvider } from './contexts/verse-requester';
 import { WindowManagerContextProvider } from './contexts/window-manager';
 import WindowContent from './components/WindowContent';
 import { useEffect } from 'react';
@@ -77,9 +76,7 @@ function ContextProviderLayer() {
       <GlobalFeaturesConfigurationContextProvider>
         <BackendConnectionContextProvider>
           <WindowManagerContextProvider>
-            <VerseRequesterContextProvider>
-              <Routing />
-            </VerseRequesterContextProvider>
+            <Routing />
           </WindowManagerContextProvider>
         </BackendConnectionContextProvider>
       </GlobalFeaturesConfigurationContextProvider>

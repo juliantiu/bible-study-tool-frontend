@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { Col, Form, Row } from 'react-bootstrap';
 import { BibleVerse } from '../../../types/BibleContents';
 import { DifficultyLevels, MemorizationSettings, MemorizeSession, MemoryVerse, MemoryVerseWord, TimerStateOptions } from '../../../types/VerseMemorization';
@@ -192,9 +192,9 @@ function selectNextIndex(
 
   } while(
     verseHistory.some(vh =>
-      vh.bibleBook === chosenVerse.bibleBook
-      && vh.bookChapter === chosenVerse.bookChapter
-      && vh.chapterVerseNumber === chosenVerse.chapterVerseNumber
+      vh.bibleBook === chosenVerse?.bibleBook
+      && vh.bookChapter === chosenVerse?.bookChapter
+      && vh.chapterVerseNumber === chosenVerse?.chapterVerseNumber
     )
   )
 

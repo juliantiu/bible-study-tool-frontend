@@ -1,6 +1,6 @@
 import './index.css'
 import { Col, Form, InputGroup, Row } from "react-bootstrap";
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef } from 'react';
 import { TimerStateOptions } from '../../../types/VerseMemorization';
 
 function stopTimer(timerObj: any) {
@@ -258,7 +258,7 @@ export default function MemorizeCountdown({
         }
       );
     },
-    [currentTimerValues]
+    [currentTimerValues, setTimerState]
   );
 
   const timerZeroed = 
