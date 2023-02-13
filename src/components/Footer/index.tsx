@@ -26,6 +26,7 @@ export default function Footer() {
         <button
           key={`${window.windowType}-${window.windowId}`}
           onClick={() => onWindowNavigateClick(window)}
+          className="footer-button"
         >
             {window.windowType === WindowType.read && <>&#x1f4d6;</>}
             {window.windowType === WindowType.search && <>&#128269;</>}

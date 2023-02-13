@@ -6,8 +6,8 @@
 }
 
 #new-window-options button {
-  height: 100px;
-  width: 100px;
+  height: 80px;
+  width: 80px;
 
   font-size: 40px;
 
@@ -15,11 +15,15 @@
   border: none;
 
   border-radius: 100%;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #new-window-options button:hover, button.active {
-  height: 120px;
-  width: 120px;
+  height: 90px;
+  width: 90px;
   font-size: 60px;
   background-color: #191970;
 }

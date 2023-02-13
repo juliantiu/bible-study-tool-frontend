@@ -73,6 +73,12 @@
   color: green;
 }
 
+#memorize-stop-button-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 #stop-button {
   height: 15px;
   width: 15px;
