@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useCallback, useEffect, useState } from "react";
+import { createContext, ReactNode, useCallback, useState } from "react";
 import useGlobalFeaturesConfiguration from "../hooks/useGlobalfeaturesConfiguration";
 import { SearchSettingsVerseOrder, SearchType } from "../types/Searching";
 import { SearchWindow, Window, WindowType } from '../types/Windows'
@@ -28,6 +28,7 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
       const defaultWindow: SearchWindow = {
         language,
         bibleVersion,
+        bibleContents: undefined,
         windowId: 0,
         windowType: WindowType.search,
 

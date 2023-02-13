@@ -71,7 +71,7 @@ interface ISearch {
 
 export default function Search({ currWindow, updateWindow }: ISearch) {
 
-  const { bibleContents, requestFullBibleBookName, requestVerses } = useVerseRequester(currWindow.language, currWindow.bibleVersion);
+  const { bibleContents, requestFullBibleBookName, requestVerses } = useVerseRequester(currWindow.language, currWindow.bibleVersion, currWindow.bibleContents);
   
   const searchWindow = useRef(currWindow);
 
@@ -95,6 +95,7 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
     () => {
       searchWindow.current = {
         activeSearchType,
+        bibleContents,
         searchSettings,
         bibleVersion: currWindow.bibleVersion,
         language: currWindow.language,
@@ -107,6 +108,7 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
     },
     [
       activeSearchType,
+      bibleContents,
       currWindow,
       inputtedKeywords,
       inputtedVerses,
@@ -153,8 +155,14 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
     </Row>
   );
 
+  const noBibleContents =
+    bibleContents === undefined
+    || bibleContents === null
+    || Object.keys(bibleContents).length === 0;
+
   return (
     <div>
+      {noBibleContents && <div className="window-content-loading">Loading...</div>} 
       <SearchNavbar />
       <Container className="content-window" fluid>
         {searchSettingsDisplay}

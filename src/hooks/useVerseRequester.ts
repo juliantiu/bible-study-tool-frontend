@@ -5,11 +5,22 @@ import { normalizeBibleBookName, processRawVerses } from "../utils/verse-parsing
 import { BIBLE_BOOK_KEYS, BIBLE_BOOK_KEY_MAPPING } from "../utils/static-references-util";
 import processVerseRecipes from "../utils/verse-building-util";
 
-export default function useVerseRequester(language: string, bibleVersion: string) {
+export default function useVerseRequester(language: string, bibleVersion: string, existingBibleContents?: BibleContents) {
   const [bibleContents, setBibleContents] = useState<BibleContents>({});
   
   useEffect(
     () => {
+
+      const noExistingBibleContents =
+        existingBibleContents === undefined
+        || existingBibleContents === null
+        || Object.keys(existingBibleContents).length === 0;
+
+      if (!noExistingBibleContents) {
+        setBibleContents(existingBibleContents);
+        return;
+      }
+
       const languageCopy = language ?? 'eng';
       const bibleVersionCopy = bibleVersion ?? 'recovery_version';
 
@@ -36,7 +47,7 @@ export default function useVerseRequester(language: string, bibleVersion: string
   
       loadBibleData();
     },
-    [bibleVersion, language, setBibleContents]
+    [bibleVersion, existingBibleContents, language, setBibleContents]
   );
 
   const requestVerses = useCallback(

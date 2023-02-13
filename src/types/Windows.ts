@@ -1,4 +1,4 @@
-import { BibleVerse } from "./BibleContents";
+import { BibleContents, BibleVerse } from "./BibleContents";
 import { SearchSettings, SearchType } from "./Searching";
 import { DifficultyLevels, MemorizationSettings, MemorizeSession, TimerStateOptions } from "./VerseMemorization";
 
@@ -21,6 +21,7 @@ export interface Window {
   windowType: WindowType;
   language: string;
   bibleVersion: string;
+  bibleContents: BibleContents | undefined;
 }
 
 export interface ReadWindow extends Window {

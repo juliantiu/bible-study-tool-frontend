@@ -17,8 +17,8 @@ interface IMemorize {
 }
 
 export default function Memorize({ currWindow, updateWindow }: IMemorize) {
-  const { bibleVersion, language } = currWindow;
-  const { requestFullBibleBookName, requestVerses } = useVerseRequester(language ?? '', bibleVersion ?? '');
+  const { bibleContents: existingBibleContents, bibleVersion, language } = currWindow;
+  const { bibleContents, requestFullBibleBookName, requestVerses } = useVerseRequester(language ?? '', bibleVersion ?? '', existingBibleContents);
   const memorizeWindow = useRef<MemorizeWindow>(currWindow);
   
   // Settings
@@ -84,6 +84,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
   useEffect(
     () => {
       memorizeWindow.current = {
+        bibleContents,
         currIdx,
         currentMemorizeSession,
         currentTimerValues,
@@ -105,6 +106,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
       }
     },
     [
+      bibleContents,
       currIdx,
       currentMemorizeSession,
       currentMemorizeSession.inputVerses,
@@ -136,8 +138,14 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
     [memorizeWindow, updateWindow]
   );
 
+  const noBibleContents =
+    bibleContents === undefined
+    || bibleContents === null
+    || Object.keys(bibleContents).length === 0;
+
   return (
-    <div> 
+    <div>
+      {noBibleContents && <div className="window-content-loading">Loading...</div>} 
       <MemorizeNavbar />
       <Container className="content-window" fluid>
         <Row>
