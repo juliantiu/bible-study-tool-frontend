@@ -22,9 +22,9 @@
 }
 
 #new-window-options button:hover, button.active {
-  height: 90px;
+  /* height: 90px;
   width: 90px;
-  font-size: 60px;
+  font-size: 60px; */
   background-color: #191970;
 }
 

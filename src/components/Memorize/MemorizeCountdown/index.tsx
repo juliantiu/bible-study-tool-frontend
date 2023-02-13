@@ -275,9 +275,11 @@ export default function MemorizeCountdown({
           onClick={() => onTimerStateClick(TimerStateOptions.play)}
           disabled={timerZeroed}
         >
-          &#10148;
+          ▶
         </button>
       );
+
+      //&#10148;
 
   const pauseButton =
     (timerState === TimerStateOptions.play
@@ -288,9 +290,11 @@ export default function MemorizeCountdown({
           onClick={() => onTimerStateClick(TimerStateOptions.pause)}
           disabled={timerZeroed}
         >
-          &#10073;&#10073;
+          ⏸︎
         </button> 
       );
+
+      //&#10073;&#10073;
     
   const stopButton = (
     <button
@@ -298,7 +302,8 @@ export default function MemorizeCountdown({
       disabled={timerState === TimerStateOptions.stop}
       id="memorize-stop-button-container"
     >
-      <div id="stop-button"/>
+      {/* <div id="stop-button"/> */}
+      ⏹︎
     </button>
   );
 
