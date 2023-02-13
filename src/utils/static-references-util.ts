@@ -179,6 +179,8 @@ export const BIBLE_BOOK_KEY_MAPPING = new Map<string, string>([
  ['Qoh', 'ECCL'],
 
  ['songofsongs', 'SONG'],
+ ['songofsol', 'SONG'],
+ ['songsol', 'SONG'],
  ['song', 'SONG'],
  ['sos', 'SONG'],
  ['so', 'SONG'],
