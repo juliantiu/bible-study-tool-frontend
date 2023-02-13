@@ -49,7 +49,7 @@ export default function WindowContent() {
         );
       }
     },
-    [toggle, windowId]
+    [toggle, updateWindow, windowId]
   );
     
   return ret;
