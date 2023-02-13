@@ -1,14 +1,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Col, Container, Row } from 'react-bootstrap';
-import useVerseRequester from '../../hooks/useVerseRequester';
-import { BibleVerse } from '../../types/BibleContents';
-import { SearchWindow, Window } from '../../types/Windows';
-import SearchSettings from './SearchSettings';
-import SearchNavbar from './SearchNavbar';
-import SearchVerseTexts from './SearchVerseTexts';
-import SearchVerseReferences from './SearchVerseReferences';
-import { SearchSettings as SearchSettingsType, SearchSettingsVerseOrder, SearchType } from '../../types/Searching';
-import { getBibleBookOrder } from '../../utils/verse-misc';
+import useVerseRequester from '../../../hooks/useVerseRequester';
+import { BibleVerse } from '../../../types/BibleContents';
+import { SearchWindow, Window } from '../../../types/Windows';
+import SearchSettings from '../SearchSettings';
+import SearchNavbar from '../SearchNavbar';
+import SearchVerseTexts from '../SearchVerseTexts';
+import SearchVerseReferences from '../SearchVerseReferences';
+import { SearchSettings as SearchSettingsType, SearchSettingsVerseOrder, SearchType } from '../../../types/Searching';
+import { getBibleBookOrder } from '../../../utils/verse-misc';
 
 function generateUniqueSetOfVerses(verseList: BibleVerse[], searchSettings: SearchSettingsType) {
   if (!searchSettings.removeDuplicates) return verseList;

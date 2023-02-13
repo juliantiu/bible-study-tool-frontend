@@ -1,14 +1,14 @@
 import { Col, Container, Row } from "react-bootstrap";
-import MemorizeNavbar from "./MemorizeNavbar";
-import MemorizeSettings from './MemorizeSettings';
-import MemorizeCountdown from './MemorizeCountdown';
-import MemorizeQuizWindow from "./MemorizeQuizWIndow";
-import MemorizeHistory from './MemorizeHistory';
-import { MemorizeWindow, Window } from '../../types/Windows';
-import useVerseRequester from '../../hooks/useVerseRequester';
+import MemorizeNavbar from "../MemorizeNavbar";
+import MemorizeSettings from '../MemorizeSettings';
+import MemorizeCountdown from '../MemorizeCountdown';
+import MemorizeQuizWindow from "../MemorizeQuizWIndow";
+import MemorizeHistory from '../MemorizeHistory';
+import { MemorizeWindow, Window } from '../../../types/Windows';
+import useVerseRequester from '../../../hooks/useVerseRequester';
 import { useEffect, useRef, useState } from 'react';
-import { BibleVerse } from '../../types/BibleContents';
-import { MemorizeSession, TimerStateOptions } from '../../types/VerseMemorization';
+import { BibleVerse } from '../../../types/BibleContents';
+import { MemorizeSession, TimerStateOptions } from '../../../types/VerseMemorization';
 
 interface IMemorize {
   currWindow: MemorizeWindow;
