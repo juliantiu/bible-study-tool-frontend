@@ -1,7 +1,8 @@
 import './index.css';
-import { Col, Row } from "react-bootstrap";
+import { Accordion, Col, Row } from "react-bootstrap";
 import { BibleVerse } from "../../../types/BibleContents";
 import { useEffect, useRef } from 'react';
+import SearchVerseTextDisplaySettings from './SearchVerseTextDisplaySettings' 
 
 interface ISearchVerseTexts {
   requestFullBibleBookName: (keyword: string) => string;
@@ -75,15 +76,33 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
   return (
     <Row>
       <Col xs={12}>
-        <div id="search-display-verses-container-primary" ref={containerPrimaryRef}>
-          {/* {!zoom && <button id="zoom-out-button" className="zoom-in-out-button" onClick={onZoomClicked}>&#8599;</button>} */}
-          {/* {zoom && <button id="zoom-in-button" ref={zoomInButtonRef} className="zoom-in-out-button" onClick={onZoomClicked}>&#8601;</button>} */}
-          {!zoom && zoomOutButton}
-          {zoom && zoomInButton}          
-          <div id="search-display-verses-container-secondary" ref={containerSecondaryRef}>
-            {displayVerses}
-          </div>
-        </div>
+        <Row>
+          <Col xs={12}>
+            <div id="search-display-verses-display-settings-container">
+              <Accordion defaultActiveKey="0">
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>Display settings</Accordion.Header>
+                  <Accordion.Body>
+                    <SearchVerseTextDisplaySettings />
+                  </Accordion.Body>
+                </Accordion.Item>
+              </Accordion>
+            </div>
+          </Col>
+        </Row>
+        <Row>
+          <Col xs={12}>
+            <div id="search-display-verses-container-primary" ref={containerPrimaryRef}>
+              {/* {!zoom && <button id="zoom-out-button" className="zoom-in-out-button" onClick={onZoomClicked}>&#8599;</button>} */}
+              {/* {zoom && <button id="zoom-in-button" ref={zoomInButtonRef} className="zoom-in-out-button" onClick={onZoomClicked}>&#8601;</button>} */}
+              {!zoom && zoomOutButton}
+              {zoom && zoomInButton}          
+              <div id="search-display-verses-container-secondary" ref={containerSecondaryRef}>
+                {displayVerses}
+              </div>
+            </div>
+          </Col>
+        </Row>
       </Col>
     </Row>
   );

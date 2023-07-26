@@ -1,3 +1,15 @@
+#search-display-verses-display-settings-container {
+  padding: 0px 15px 15px 15px;
+  position: relative;
+  background-color: #FFFFFF;
+  position: relative;
+}
+
+#search-display-verses-display-settings-container-secondary > div {
+  display: inline-block;
+}
+
+
 #search-display-verses-container-primary {
   padding: 0px 15px 15px 15px;
   border-bottom-left-radius: 20px;
