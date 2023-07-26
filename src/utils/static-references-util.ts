@@ -323,7 +323,7 @@ export const BIBLE_BOOK_KEY_MAPPING = new Map<string, string>([
 
  ['2thessalonians', '2THESS'],
  ['2thess', '2THESS'],
- ['2thes', '1THESS'],
+ ['2thes', '2THESS'],
  ['2th', '2THESS'],
 
  ['1timothy', '1TIM'],
