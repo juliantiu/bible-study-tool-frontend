@@ -147,7 +147,41 @@ function generateVerseStructure(
                                         === tokenizedVerse[i-1]))
     {
       // -1 because memory verse word index is +1 its actual index
-      structure.push(memoryVerseWords.find(mvw => mvw.wordIdx === i)!);
+      
+      const memoryVerseWord = memoryVerseWords.find(mvw => mvw.wordIdx === i)!;
+
+      const regPattern = /("?)(\w*)([\.,;:!])("?)/;
+      const match = memoryVerseWord.missingWord.match(regPattern);
+
+      if (!!match) {
+
+        // matches '"' at the beginning of the missing word
+        if (match[0] !== undefined && match[0] === '"') {
+          structure.push(match[0]);          
+        }
+        
+        // remove punctuation from the missing word
+        const removePunctRegexPatt = /[\.,;:!"']/;
+        const missingWordNoPunc = memoryVerseWord.missingWord.replace(removePunctRegexPatt, "");
+
+        const memoryVerseWordFinal: MemoryVerseWord = {...memoryVerseWord, missingWord: missingWordNoPunc };
+
+        structure.push(memoryVerseWordFinal);
+
+        // matches either .,!; at the end or second to last char of the missing word
+        if (match[3] !== undefined) {
+          structure.push(match[3]);
+        } 
+
+        // matches a '"' at the end of the missing word
+        if (match[4] !== undefined && match[4] === '"') {
+          structure.push(match[4]);
+        } 
+ 
+      } else {
+        structure.push(memoryVerseWord);
+      }
+      
     } else {
       structure.push(tokenizedVerse[i-1]);
     }

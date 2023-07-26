@@ -42,6 +42,16 @@
   margin: 0px 5px;
 }
 
+.memorize-history-verse-word-display-ending-punct {
+  display: inline-block;
+  margin: 0px 0px 0px -5px;
+}
+
+.memorize-history-verse-word-display-starting-punct {
+  display: inline-block;
+  margin: 0px -5px 0px 5px;
+}
+
 .memorize-history-verse-display-header-has-mistake > button {
   background-color:	#eea6a6 !important;
 }

@@ -12,8 +12,15 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean, requestFull
         verse.verseWords.map(
           (v, idx) => {
 
-            if (typeof v === 'string')
+            if (typeof v === 'string') {
+              if (/^[\.,;:!]$/.test(v) || /['"]$/.test(v))
+                return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct">{v}</div>
+
+              if (/^['"]/.test(v))
+                return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-starting-punct">{v}</div>
+
               return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}>{idx === 0 ? requestFullBibleBookName(v) : v}</p>;
+            }
 
             if (requestFullBibleBookName(v.attemptedWord) === requestFullBibleBookName(v.missingWord))
               return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-no-mistake">{v.attemptedWord}</p>;
