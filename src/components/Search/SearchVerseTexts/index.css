@@ -28,16 +28,16 @@
 
 .zoom-in-out-button {
   position: absolute;
-  top: 10px;
-  right: 40px;
+  top: 5px;
+  right: 35px;
 
-  background-color: #191970;
+  background-color: transparent;
   color: #FFFFFF;
 
-  height: 50px;
-  width: 50px;
+  height: 30px;
+  width: 30px;
 
-  border-radius: 15px;
+  border-radius: 8px;
 
   opacity: .8;
 
@@ -48,6 +48,30 @@
 
   box-shadow: none;
   border: none;
+}
+
+.zoom-in-out-out-button-div {
+  height: 15px;
+  width: 15px;
+
+  position: relative;
+  top: -2px;
+  right: -2px;
+
+  border-top: #191970 4px solid;
+  border-right: #191970 4px solid;
+}
+
+.zoom-in-out-in-button-div {
+  height: 15px;
+  width: 15px;
+
+  position: relative;
+  top: -10px;
+  right: -10px;
+
+  border-left: #191970 4px solid;
+  border-bottom: #191970 4px solid;
 }
 
 .zoom-in-out-button:hover {

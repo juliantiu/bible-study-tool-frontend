@@ -60,12 +60,26 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
     }
   );
 
+  const zoomOutButton = (
+    <button id="zoom-out-button" className="zoom-in-out-button" onClick={onZoomClicked}>
+      <div className="zoom-in-out-out-button-div" />
+    </button>
+  );
+
+  const zoomInButton = (
+    <button id="zoom-in-button" ref={zoomInButtonRef} className="zoom-in-out-button" onClick={onZoomClicked}>
+      <div className="zoom-in-out-in-button-div" />
+    </button>
+  );
+
   return (
     <Row>
       <Col xs={12}>
         <div id="search-display-verses-container-primary" ref={containerPrimaryRef}>
-          {!zoom && <button id="zoom-out-button" className="zoom-in-out-button" onClick={onZoomClicked}>&#8599;</button>}
-          {zoom && <button id="zoom-in-button" ref={zoomInButtonRef} className="zoom-in-out-button" onClick={onZoomClicked}>&#8601;</button>}
+          {/* {!zoom && <button id="zoom-out-button" className="zoom-in-out-button" onClick={onZoomClicked}>&#8599;</button>} */}
+          {/* {zoom && <button id="zoom-in-button" ref={zoomInButtonRef} className="zoom-in-out-button" onClick={onZoomClicked}>&#8601;</button>} */}
+          {!zoom && zoomOutButton}
+          {zoom && zoomInButton}          
           <div id="search-display-verses-container-secondary" ref={containerSecondaryRef}>
             {displayVerses}
           </div>
