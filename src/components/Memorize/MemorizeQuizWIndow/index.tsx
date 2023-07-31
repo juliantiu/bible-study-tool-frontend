@@ -5,7 +5,7 @@ import { DifficultyLevels, MemorizationSettings, MemorizeSession, MemoryVerse, M
 import './index.css';
 
 function generateUniqueSetOfVerses(quizSettings: number, verseList: BibleVerse[]) {
-  if (!(quizSettings & MemorizationSettings.removeDuplicates)) return verseList;
+  if (!(quizSettings & MemorizationSettings.removeDuplicates)) return [...verseList];
 
   const verseListCopy = [...verseList];
 
@@ -150,7 +150,7 @@ function generateVerseStructure(
       
       const memoryVerseWord = memoryVerseWords.find(mvw => mvw.wordIdx === i)!;
 
-      const regPattern = /("?)(\w*)([\.,;:!])("?)/;
+      const regPattern = /("?)(\w*)([.,;:!])("?)/;
       const match = memoryVerseWord.missingWord.match(regPattern);
 
       if (!!match) {
@@ -161,7 +161,7 @@ function generateVerseStructure(
         }
         
         // remove punctuation from the missing word
-        const removePunctRegexPatt = /[\.,;:!"']/g;
+        const removePunctRegexPatt = /[.,;:!"']/g;
         const missingWordNoPunc = memoryVerseWord.missingWord.replaceAll(removePunctRegexPatt, '');
 
         const memoryVerseWordFinal: MemoryVerseWord = {...memoryVerseWord, missingWord: missingWordNoPunc };
@@ -311,12 +311,14 @@ export default function MemorizeQuizWindow({
   );
 
   const memoryVerseWords = useMemo(
-    () => { return generateMemoryVerseWords(currentVerse, numBlanks) },
-    [currentVerse, numBlanks]
+    () => { if (verseHistory) {}; return generateMemoryVerseWords(currentVerse, numBlanks) },
+    [currentVerse, numBlanks, verseHistory] // include verseHistory as a dependency to encourage new memory verse words generation
   );
 
   let verseStructure = useMemo(
-    () => { return generateVerseStructure(currentVerse, memoryVerseWords) },
+    () => { 
+      return generateVerseStructure(currentVerse, memoryVerseWords);
+    },
     [currentVerse, memoryVerseWords]
   );
   
@@ -340,47 +342,79 @@ export default function MemorizeQuizWindow({
 
       // Process non-blank input values
       const verseStructureCopy = [...verseStructure]; 
-      verseStructure = processAnswers(allInputs, verseStructureCopy);
+      const verseStructureResult = processAnswers(allInputs, verseStructureCopy);
 
       // set the current verse 
       setVerseHistory(prev => {
-        prev.push(currentVerse);
-        return prev;
+        const prevCopy = [...prev];
+        prevCopy.push(currentVerse);
+        return prevCopy;
       });
+
+      let tempCounter = 0;
 
       setCurrentMemorizeSession(
         prev => {
           const prevCopy = {...prev};
+
           const memoryVerse: MemoryVerse = {
             bibleBook: currentVerse.bibleBook,
             bookChapter: currentVerse.bookChapter,
             chapterVerse: currentVerse.chapterVerseNumber,
-            verseWords: verseStructure
+            verseWords: verseStructureResult
           }
-          prevCopy.memoryVerses.push(memoryVerse);
+
+          // for some reason this triggers twice
+          // Hence, check if previous entry is the same verse structure
+          // If so, do nothing
+          if (tempCounter > 0) {
+            prevCopy.memoryVerses.push(memoryVerse);
+            tempCounter = 0;
+          }
+
+          tempCounter++;
+
           return prevCopy;
         }
       );
 
-      selectNextIndex(
-        quizSettings,
-        uniqueVerseList,
-        setCurrIdx,
-        verseHistory,
-        timerState
-      );
+      // selectNextIndex(
+      //   quizSettings,
+      //   uniqueVerseList,
+      //   setCurrIdx,
+      //   verseHistory,
+      //   timerState
+      // );
     },
     [
       currentVerse,
-      quizSettings,
+      // quizSettings,
       verseStructure, 
-      setCurrIdx, 
+      setCurrentMemorizeSession,
+      // setCurrIdx, 
       setVerseHistory, 
-      uniqueVerseList, 
-      verseHistory, 
+      // uniqueVerseList, 
+      // verseHistory, 
       timerState
     ]
   );
+
+  useEffect(() => {
+    selectNextIndex(
+      quizSettings,
+      uniqueVerseList,
+      setCurrIdx,
+      verseHistory,
+      timerState
+    );
+  },
+  [  
+    quizSettings,
+    uniqueVerseList,
+    setCurrIdx,
+    verseHistory,
+    timerState
+  ]);
 
   useEffect(
     () => {
