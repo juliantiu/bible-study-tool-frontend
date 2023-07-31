@@ -13,8 +13,14 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean, requestFull
           (v, idx) => {
 
             if (typeof v === 'string') {
-              if (/^[\.,;:!]$/.test(v) || /['"]$/.test(v))
-                return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct">{v}</div>
+              
+              if (v.length === 1) {
+                if ((/^[\.,;:!]$/.test(v)))
+                  return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct">{v}</div>;
+              
+                if (/['"]$/.test(v))
+                  return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct-quote">{v}</div>;
+              }
 
               if (/^['"]/.test(v))
                 return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-starting-punct">{v}</div>

@@ -146,7 +146,7 @@ function generateVerseStructure(
                                      && mvw.missingWord
                                         === tokenizedVerse[i-1]))
     {
-      // -1 because memory verse word index is +1 its actual index
+      // ^^ -1 because memory verse word index is +1 its actual index
       
       const memoryVerseWord = memoryVerseWords.find(mvw => mvw.wordIdx === i)!;
 
@@ -161,8 +161,8 @@ function generateVerseStructure(
         }
         
         // remove punctuation from the missing word
-        const removePunctRegexPatt = /[\.,;:!"']/;
-        const missingWordNoPunc = memoryVerseWord.missingWord.replace(removePunctRegexPatt, "");
+        const removePunctRegexPatt = /[\.,;:!"']/g;
+        const missingWordNoPunc = memoryVerseWord.missingWord.replaceAll(removePunctRegexPatt, '');
 
         const memoryVerseWordFinal: MemoryVerseWord = {...memoryVerseWord, missingWord: missingWordNoPunc };
 

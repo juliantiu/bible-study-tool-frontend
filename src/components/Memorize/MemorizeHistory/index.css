@@ -42,14 +42,19 @@
   margin: 0px 5px;
 }
 
+.memorize-history-verse-word-display-starting-punct {
+  display: inline-block;
+  margin: 0px -5px 0px 5px;
+}
+
 .memorize-history-verse-word-display-ending-punct {
   display: inline-block;
   margin: 0px 0px 0px -5px;
 }
 
-.memorize-history-verse-word-display-starting-punct {
+.memorize-history-verse-word-display-ending-punct-quote {
   display: inline-block;
-  margin: 0px -5px 0px 5px;
+  margin: 0px 0px 0px 0px;
 }
 
 .memorize-history-verse-display-header-has-mistake > button {
