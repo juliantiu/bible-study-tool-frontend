@@ -351,7 +351,10 @@ export default function MemorizeQuizWindow({
         return prevCopy;
       });
 
-      let tempCounter = 0;
+      // See comments below for the reason for temp counter.
+      // temp counter is needed only in development
+      // for some reason, this problem is not showing up in the build version
+      // let tempCounter = 0;
 
       setCurrentMemorizeSession(
         prev => {
@@ -367,12 +370,13 @@ export default function MemorizeQuizWindow({
           // for some reason this triggers twice
           // Hence, check if previous entry is the same verse structure
           // If so, do nothing
-          if (tempCounter > 0) {
+          // this is the usage for temp counter
+          // if (tempCounter > 0) {
             prevCopy.memoryVerses.push(memoryVerse);
-            tempCounter = 0;
-          }
+          //   tempCounter = 0;
+          // }
 
-          tempCounter++;
+          // tempCounter++;
 
           return prevCopy;
         }
