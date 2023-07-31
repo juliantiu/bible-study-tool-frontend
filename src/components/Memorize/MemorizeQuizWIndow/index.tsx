@@ -150,34 +150,49 @@ function generateVerseStructure(
       
       const memoryVerseWord = memoryVerseWords.find(mvw => mvw.wordIdx === i)!;
 
-      const regPattern = /("?)(\w*)([.,;:!])("?)/;
+      const regPattern = /^(\(?)("?)(\w*)(\)?)([.,;:!?]?)(\)?)("?)$/;
       const match = memoryVerseWord.missingWord.match(regPattern);
 
       if (!!match) {
 
-        // matches '"' at the beginning of the missing word
-        if (match[0] !== undefined && match[0] === '"') {
-          structure.push(match[0]);          
+        // matches '" at the before the missing word
+        if (match[1] !== undefined && match[1] !== '') {
+          structure.push(match[1]);          
+        }
+
+        // matches ( at the before the missing word
+        if (match[2] !== undefined && match[2] !== '') {
+          structure.push(match[2]);          
         }
         
         // remove punctuation from the missing word
-        const removePunctRegexPatt = /[.,;:!"']/g;
+        const removePunctRegexPatt = /[.,;:!()?"']/g;
         const missingWordNoPunc = memoryVerseWord.missingWord.replaceAll(removePunctRegexPatt, '');
 
         const memoryVerseWordFinal: MemoryVerseWord = {...memoryVerseWord, missingWord: missingWordNoPunc };
 
         structure.push(memoryVerseWordFinal);
 
-        // matches either .,!; at the end or second to last char of the missing word
-        if (match[3] !== undefined) {
-          structure.push(match[3]);
+        // matches ) after the missing word
+        if ((match[4] !== undefined) && (match[4] !== '')) {
+          structure.push(match[4]);
+        } 
+
+        // matches either .,!;:? at the end or second to last char of the missing word
+        if (match[5] !== undefined && (match[5] !== '')) {
+          structure.push(match[5]);
+        } 
+
+        // matches either ) at the end or second to last char of the missing word
+        if ((match[6] !== undefined) && (match[6] !== '')) {
+          structure.push(match[6]);
         } 
 
         // matches a '"' at the end of the missing word
-        if (match[4] !== undefined && match[4] === '"') {
-          structure.push(match[4]);
+        if (match[7] !== undefined && match[7] !== '') {
+          structure.push(match[7]);
         } 
- 
+
       } else {
         structure.push(memoryVerseWord);
       }
@@ -186,7 +201,7 @@ function generateVerseStructure(
       structure.push(tokenizedVerse[i-1]);
     }
   }
-
+    
   return structure;
 }
 

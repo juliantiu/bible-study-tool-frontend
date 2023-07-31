@@ -39,22 +39,21 @@
 
 .memorize-history-verse-body-container p {
   display: inline-block;
-  margin: 0px 5px;
+  margin: 0px 3px;
 }
 
-.memorize-history-verse-word-display-starting-punct {
+.memorize-history-verse-word-display-punct {
   display: inline-block;
-  margin: 0px -5px 0px 5px;
 }
 
-.memorize-history-verse-word-display-ending-punct {
+.memorize-history-verse-word-display-left-is-punct {
   display: inline-block;
-  margin: 0px 0px 0px -5px;
+  margin-left: 2px !important;
 }
 
-.memorize-history-verse-word-display-ending-punct-quote {
+.memorize-history-verse-word-display-right-is-punct {
   display: inline-block;
-  margin: 0px 0px 0px 0px;
+  margin-right: 2px !important;
 }
 
 .memorize-history-verse-display-header-has-mistake > button {

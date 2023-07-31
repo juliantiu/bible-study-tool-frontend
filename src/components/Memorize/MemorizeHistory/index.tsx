@@ -12,29 +12,73 @@ function mapThroughVerses(verses: MemoryVerse[], isCurrent: boolean, requestFull
         verse.verseWords.map(
           (v, idx) => {
 
-            if (typeof v === 'string') {
-              
+            if (typeof v === 'string') { 
+
+              // if the word is a punctuation, simply remove spacing
               if (v.length === 1) {
-                if ((/^[.,;:!]$/.test(v)))
-                  return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct">{v}</div>;
-              
-                if (/['"]$/.test(v))
-                  return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-ending-punct-quote">{v}</div>;
+                if ((/^[().,;:!?'"\[\]{}\\]$/.test(v)))
+                  return (
+                    <div
+                      key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}
+                      className="memorize-history-verse-word-display-punct"
+                    >
+                      {v}
+                    </div>
+                  );
               }
 
-              if (/^['"]/.test(v))
-                return <div key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-starting-punct">{v}</div>
+              return (
+                <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}>
+                  {idx === 0 ? requestFullBibleBookName(v) : v}
+                </p>
+              );
+            }
 
-              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}>{idx === 0 ? requestFullBibleBookName(v) : v}</p>;
+            function leftAdjecentIsPunctuation() {
+              if (idx === 0) return false;
+              const prevEntry = verse.verseWords[idx-1];
+              if (typeof prevEntry !== 'string') return false;
+              if (prevEntry.length > 1) return false;
+              if (!(/^[().,;:!?'"\[\]{}\\]$/.test(prevEntry))) return false;
+
+              return true;
+            }
+      
+            function rightAdjacentIsPunctuation() {
+              if (idx >= verse.verseWords.length) return false;
+              const nextEntry = verse.verseWords[idx+1];
+              if (typeof nextEntry !== 'string') return false;
+              if (nextEntry.length > 1) return false;
+              if (!(/^[().,;:!?'"\[\]{}\\]$/.test(nextEntry))) return false;
+
+              return true
             }
 
             if (requestFullBibleBookName(v.attemptedWord) === requestFullBibleBookName(v.missingWord))
-              return <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="memorize-history-verse-word-display-no-mistake">{v.attemptedWord}</p>;
+              return (
+                <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}
+                  className={
+                    `${leftAdjecentIsPunctuation() ? 'memorize-history-verse-word-display-left-is-punct' : ''}
+                    ${rightAdjacentIsPunctuation() ? 'memorize-history-verse-word-display-right-is-punct' : ''}
+                    memorize-history-verse-word-display-no-mistake`
+                  }
+                >
+                  {v.attemptedWord}
+                </p>
+              );
 
             hasMistake = true;
 
             return (
-              <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`} className="mmemorize-history-verse-word-display-has-mistake">{v.attemptedWord} [{v.missingWord}]</p>
+              <p key={`memorize-history-${isCurrent ? 'current-' : ''}verse-word-display-${idx}`}
+                className={`
+                  ${leftAdjecentIsPunctuation() ? 'memorize-history-verse-word-display-left-is-punct' : ''}
+                  ${rightAdjacentIsPunctuation() ? 'memorize-history-verse-word-display-right-is-punct' : ''}
+                  mmemorize-history-verse-word-display-has-mistake`
+                }
+              >
+                {v.attemptedWord} [{v.missingWord}]
+              </p>
             );
           }
         );
