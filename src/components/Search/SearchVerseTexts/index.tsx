@@ -48,7 +48,7 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
         primaryRef.style.borderTopLeftRadius = '0px';
         primaryRef.style.borderTopRightRadius = '0px';
 
-        secondaryRef.style.height = '354.5px';
+        secondaryRef.style.height = '454.5px';
       }
     },
     [containerPrimaryRef, containerSecondaryRef, zoom, zoomInButtonRef]

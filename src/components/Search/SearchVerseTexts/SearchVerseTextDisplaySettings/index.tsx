@@ -129,9 +129,9 @@ export default function SearchVerseTextDisplaySettings({
   );
 
   const verseBothFormCheckOps = [
-    ['newline', RefTextChangeType.newline]
+    ['newline', searchDisplayBothSettings.newline, RefTextChangeType.newline]
   ].map(
-    ([option, changeType]) => {
+    ([option, val, changeType]) => {
       return (
         <Form.Check
           inline
@@ -141,6 +141,7 @@ export default function SearchVerseTextDisplaySettings({
           type="checkbox"
           label={option}
           className="mt-2"
+          value={val as number}
         />
       )
     }
@@ -216,6 +217,7 @@ export default function SearchVerseTextDisplaySettings({
               <Form.Control 
                 type="color"
                 onChange={e => onSetSearchDisplayBothSettingsChange(RefTextChangeType.fontColor, e)}
+                value={searchDisplayBothSettings.fontColor}
               />
             </Col>
           </Form.Group>
