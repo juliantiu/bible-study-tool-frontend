@@ -29,7 +29,7 @@
 }
 
 .search-result-display-verse p  {
-  display: inline;
+  font-family: Arial, Helvetica, sans-serif;
   font-size: 20px;
 }
 

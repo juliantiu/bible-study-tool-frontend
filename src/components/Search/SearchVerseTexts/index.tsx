@@ -1,8 +1,9 @@
 import './index.css';
 import { Accordion, Col, Row } from "react-bootstrap";
 import { BibleVerse } from "../../../types/BibleContents";
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import SearchVerseTextDisplaySettings from './SearchVerseTextDisplaySettings' 
+import { SearchDisplayBothSettings, SearchDisplayRefTextSettings } from '../../../types/Searching';
 
 interface ISearchVerseTexts {
   requestFullBibleBookName: (keyword: string) => string;
@@ -12,6 +13,13 @@ interface ISearchVerseTexts {
 }
 
 export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, verses, zoom }: ISearchVerseTexts) {
+  const [searchDisplayReferenceSettings, setSearchDisplayReferenceSettings] =
+    useState<SearchDisplayRefTextSettings>({ bolded: true, fontSize: 11 });
+  const [searchDisplayTextSettings, setSearchDisplayTextSettings] =
+    useState<SearchDisplayRefTextSettings>({ bolded: false, fontSize: 11 });
+  const [searchDisplayBothSettings, setSearchDisplayBothSettings] =
+    useState<SearchDisplayBothSettings>({ fontColor: '#000000', newline: false });
+
   const containerPrimaryRef = useRef<any>();
   const containerSecondaryRef = useRef<any>();
   const zoomInButtonRef = useRef<any>();
@@ -44,7 +52,23 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
       }
     },
     [containerPrimaryRef, containerSecondaryRef, zoom, zoomInButtonRef]
-  )
+  );
+
+  const searchDisplayRefStyle = { 
+    fontWeight: searchDisplayReferenceSettings.bolded ? 'bold' : 'normal',
+    fontSize: `${searchDisplayReferenceSettings.fontSize}pt`,
+    color: searchDisplayBothSettings.fontColor,
+    display: searchDisplayBothSettings.newline ? 'block' : 'inline',
+    marginBottom: searchDisplayBothSettings.newline ? '-5px' : '16px'
+  };
+
+  const searchDisplayTextStyle = {
+    fontWeight: searchDisplayTextSettings.bolded ? 'bold' : 'normal',
+    fontSize: `${searchDisplayTextSettings.fontSize}pt`,
+    color: searchDisplayBothSettings.fontColor,
+    display: searchDisplayBothSettings.newline ? 'block' : 'inline',
+    marginBottom: searchDisplayBothSettings.newline ? '0px' : '16px'
+  };
 
   const displayVerses = verses.map(
     (verse, idx) => {
@@ -54,8 +78,8 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
           key={`search-result-display-verse-${verse.bibleBook}-${verse.bookChapter}-${verse.chapterVerseNumber}-${idx}`}
           className="search-result-display-verse"
         >
-          <p>{requestFullBibleBookName(`${verse.bibleBook} ${verse.bookChapter}:${verse.chapterVerseNumber}`)}</p>{' '}
-          <p>{verse.text}</p>
+          <p className="search-display-reference" style={searchDisplayRefStyle}>{requestFullBibleBookName(`${verse.bibleBook} ${verse.bookChapter}:${verse.chapterVerseNumber}`)}</p>{' '}
+          <p className="search-display-text" style={searchDisplayTextStyle}>{verse.text}</p>
         </div>
       );
     }
@@ -79,11 +103,18 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
         <Row>
           <Col xs={12}>
             <div id="search-display-verses-display-settings-container">
-              <Accordion defaultActiveKey="0">
+              <Accordion>
                 <Accordion.Item eventKey="0">
                   <Accordion.Header>Display settings</Accordion.Header>
                   <Accordion.Body>
-                    <SearchVerseTextDisplaySettings />
+                    <SearchVerseTextDisplaySettings
+                      searchDisplayReferenceSettings={searchDisplayReferenceSettings}
+                      setSearchDisplayTextSettings={setSearchDisplayTextSettings}
+                      searchDisplayTextSettings={searchDisplayTextSettings}
+                      setSearchDisplayReferenceSettings={setSearchDisplayReferenceSettings}
+                      searchDisplayBothSettings={searchDisplayBothSettings}
+                      setSearchDisplayBothSettings={setSearchDisplayBothSettings}
+                    />
                   </Accordion.Body>
                 </Accordion.Item>
               </Accordion>

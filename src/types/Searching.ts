@@ -22,3 +22,13 @@ export interface ConsecutiveVerseTracker {
   currentVerse: number;
   consecutiveCounter: number;
 }
+
+export interface SearchDisplayRefTextSettings {
+  bolded: boolean;
+  fontSize: number;
+}
+
+export interface SearchDisplayBothSettings {
+  newline: boolean;
+  fontColor: string;
+}
