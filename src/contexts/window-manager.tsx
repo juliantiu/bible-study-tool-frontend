@@ -6,14 +6,14 @@ import { SearchWindow, Window, WindowType } from '../types/Windows'
 interface IWindowManagerContext {
   windows: Window[];
   addWindow: (window: Window) => void;
-  removeWindow: () => void;
+  removeWindow: (window: Window) => void;
   updateWindow: (window: Window) => void;
 }
 
 export const WindowManagerContext = createContext<IWindowManagerContext>({
   windows: [],
   addWindow: () => undefined,
-  removeWindow: () => undefined,
+  removeWindow: (window: Window) => undefined,
   updateWindow: () => undefined
 });
 
@@ -54,8 +54,8 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
   );
 
   const removeWindow = useCallback(
-    () => {
-      setWindows(prev => [...prev.slice(0, -1)]);
+    (window: Window) => {
+      setWindows(prev => prev.filter(x => x.windowId !== window.windowId));
     },
     [setWindows]
   );

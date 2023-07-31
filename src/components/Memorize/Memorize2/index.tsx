@@ -145,7 +145,7 @@ export default function Memorize({ currWindow, updateWindow }: IMemorize) {
   return (
     <div>
       {noBibleContents && <div className="window-content-loading">Loading...</div>} 
-      <MemorizeNavbar />
+      <MemorizeNavbar currWindow={currWindow}/>
       <Container className="content-window" fluid>
         <Row>
           <Col xs={12} md={8}>

@@ -165,7 +165,7 @@ export default function Search({ currWindow, updateWindow }: ISearch) {
   return (
     <div>
       {noBibleContents && <div className="window-content-loading">Loading...</div>} 
-      <SearchNavbar />
+      <SearchNavbar currWindow={currWindow}/>
       <Container className="content-window" fluid>
         {searchSettingsDisplay}
         {searchVerseReferencesDisplay}
