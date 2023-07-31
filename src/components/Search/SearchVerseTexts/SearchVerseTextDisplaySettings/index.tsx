@@ -9,7 +9,7 @@ enum RefTextChangeType {
   fontColor
 }
 
-interface SearchVerseTextDisplaySettings {
+interface SearchVerseTextDisplaySettingsProps {
   searchDisplayReferenceSettings: SearchDisplayRefTextSettings;
   setSearchDisplayReferenceSettings: React.Dispatch<React.SetStateAction<SearchDisplayRefTextSettings>>;
   searchDisplayTextSettings: SearchDisplayRefTextSettings;
@@ -25,7 +25,7 @@ export default function SearchVerseTextDisplaySettings({
   setSearchDisplayTextSettings,
   searchDisplayBothSettings,
   setSearchDisplayBothSettings
-}: SearchVerseTextDisplaySettings) {
+}: SearchVerseTextDisplaySettingsProps) {
 
   const onSearchDisplayReferenceSettingsChange = (changeType: RefTextChangeType, e: any) => {
     const { value, checked } = e.target;

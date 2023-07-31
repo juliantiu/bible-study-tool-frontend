@@ -97,30 +97,34 @@ export default function SearchVerseTexts({ requestFullBibleBookName, setZoom, ve
     </button>
   );
 
+  const displaySettingsAccordion = !zoom && (
+    <Row>
+      <Col xs={12}>
+        <div id="search-display-verses-display-settings-container">
+          <Accordion>
+            <Accordion.Item eventKey="0">
+              <Accordion.Header>Display settings</Accordion.Header>
+              <Accordion.Body>
+                <SearchVerseTextDisplaySettings
+                  searchDisplayReferenceSettings={searchDisplayReferenceSettings}
+                  setSearchDisplayTextSettings={setSearchDisplayTextSettings}
+                  searchDisplayTextSettings={searchDisplayTextSettings}
+                  setSearchDisplayReferenceSettings={setSearchDisplayReferenceSettings}
+                  searchDisplayBothSettings={searchDisplayBothSettings}
+                  setSearchDisplayBothSettings={setSearchDisplayBothSettings}
+                />
+              </Accordion.Body>
+            </Accordion.Item>
+          </Accordion>
+        </div>
+      </Col>
+    </Row>
+  );
+
   return (
     <Row>
       <Col xs={12}>
-        <Row>
-          <Col xs={12}>
-            <div id="search-display-verses-display-settings-container">
-              <Accordion>
-                <Accordion.Item eventKey="0">
-                  <Accordion.Header>Display settings</Accordion.Header>
-                  <Accordion.Body>
-                    <SearchVerseTextDisplaySettings
-                      searchDisplayReferenceSettings={searchDisplayReferenceSettings}
-                      setSearchDisplayTextSettings={setSearchDisplayTextSettings}
-                      searchDisplayTextSettings={searchDisplayTextSettings}
-                      setSearchDisplayReferenceSettings={setSearchDisplayReferenceSettings}
-                      searchDisplayBothSettings={searchDisplayBothSettings}
-                      setSearchDisplayBothSettings={setSearchDisplayBothSettings}
-                    />
-                  </Accordion.Body>
-                </Accordion.Item>
-              </Accordion>
-            </div>
-          </Col>
-        </Row>
+        {displaySettingsAccordion}
         <Row>
           <Col xs={12}>
             <div id="search-display-verses-container-primary" ref={containerPrimaryRef}>
