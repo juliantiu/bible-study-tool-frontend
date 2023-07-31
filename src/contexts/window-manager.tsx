@@ -6,6 +6,7 @@ import { SearchWindow, Window, WindowType } from '../types/Windows'
 interface IWindowManagerContext {
   windows: Window[];
   addWindow: (window: Window) => void;
+  findNextAvailableWindow: (currWindow: Window) => Window | undefined;
   removeWindow: (window: Window) => void;
   updateWindow: (window: Window) => void;
 }
@@ -13,6 +14,7 @@ interface IWindowManagerContext {
 export const WindowManagerContext = createContext<IWindowManagerContext>({
   windows: [],
   addWindow: () => undefined,
+  findNextAvailableWindow: (currWindow: Window) => undefined,
   removeWindow: (window: Window) => undefined,
   updateWindow: () => undefined
 });
@@ -53,6 +55,27 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
     [setWindows]
   );
 
+  const findNextAvailableWindow = useCallback(
+    (currWindow: Window) => {
+
+      if (windows.length === 1) {
+        // currWindow is the only window
+        return currWindow;
+      }
+
+      const currWindowIdx =
+        windows.findIndex(win => win.windowId
+                              === currWindow.windowId);
+
+      if (currWindowIdx === 0) {
+        return windows[currWindowIdx+1];
+      }
+
+      return windows[currWindowIdx-1];
+    },
+    [windows]
+  );
+
   const removeWindow = useCallback(
     (window: Window) => {
       setWindows(prev => prev.filter(x => x.windowId !== window.windowId));
@@ -80,6 +103,7 @@ export function WindowManagerContextProvider({ children }: WindowManagerContextP
     <WindowManagerContext.Provider
       value={{
         addWindow,
+        findNextAvailableWindow,
         removeWindow,
         updateWindow,
         windows

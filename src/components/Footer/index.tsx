@@ -38,7 +38,7 @@ export default function Footer() {
 
   return (
     <div id="footer">
-      <NewWindowPopup numWindows={windows.length} show={showNewWindowPopup} onClose={onNewWindowButtonClose}/>
+      <NewWindowPopup show={showNewWindowPopup} onClose={onNewWindowButtonClose}/>
       {windowButtons}
       <button onClick={onNewWindowButtonClick}>+</button>
     </div>

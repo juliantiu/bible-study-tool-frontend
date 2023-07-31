@@ -12,8 +12,22 @@
   background-color: transparent;
   color: red;
   font-size: 20pt;
+  opacity: .8;
   border: none;
   border-radius: 50px;
+}
+
+.window-navbar-close-button:disabled {
+  color: grey;
+  opacity: .8;
+}
+
+.window-navbar-close-button:hover:disabled {
+  opacity: .8;
+}
+
+.window-navbar-close-button:hover {
+  opacity: 1;
 }
 
 .navbar-symbol h1 {

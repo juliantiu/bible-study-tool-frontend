@@ -1,25 +1,33 @@
 import './index.css';
 import { useCallback, useMemo, useState } from "react";
 import { Button, Col, Form, Modal, Row } from "react-bootstrap";
-import { WindowType } from "../../../types/Windows";
+import { Window, WindowType } from "../../../types/Windows";
 import useWindowManager from '../../../hooks/useWindowManager';
 import useGlobalFeaturesConfiguration from '../../../hooks/useGlobalfeaturesConfiguration';
 import { DifficultyLevels, TimerStateOptions } from '../../../types/VerseMemorization';
 import { SearchSettingsVerseOrder, SearchType } from '../../../types/Searching';
 
+function calculateNextWindowId(windows: Window[]) {
+
+  if (windows.length > 1) {
+    return windows[windows.length-1].windowId+1;
+  }
+
+  return windows[0].windowId+1;
+}
+
 interface INewWindowPopup {
-  numWindows: number;
   onClose: () => void;
   show: boolean;
 }
 
-export default function NewWindowPopup({ numWindows, onClose, show }: INewWindowPopup) {
+export default function NewWindowPopup({ onClose, show }: INewWindowPopup) {
   const { defaultLanguage, defaultBibleVersion, languageAndBibleVersionList } = useGlobalFeaturesConfiguration();
 
   const [windowType, setWindowType] = useState<WindowType>(WindowType.none);
   const [selectedLanguage, setSelectedLanguage] = useState(defaultLanguage);
   const [selectedBibleVersion, setSelectedBibleVersion] = useState(defaultBibleVersion);
-  const { addWindow } = useWindowManager();
+  const { windows, addWindow } = useWindowManager();
 
   const onWindowOptionClick = (option: WindowType) => {
     setWindowType(option);
@@ -36,7 +44,7 @@ export default function NewWindowPopup({ numWindows, onClose, show }: INewWindow
   const onAddWindow = () => {
 
     let newWindow: any = {
-      windowId: numWindows,
+      windowId: calculateNextWindowId(windows), // Check to see if the new id isn't alrady taken
       windowType: windowType,
       language: selectedLanguage,
       bibleVersion: selectedBibleVersion

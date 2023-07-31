@@ -1,5 +1,6 @@
+import { useNavigate } from 'react-router-dom';
 import useWindowManager from '../../../hooks/useWindowManager';
-import { MemorizeWindow } from '../../../types/Windows';
+import { MemorizeWindow, WindowType } from '../../../types/Windows';
 import './index.css';
 
 interface MemorizeNavbarPorps {
@@ -8,12 +9,20 @@ interface MemorizeNavbarPorps {
 
 export default function MemorizeNavbar({ currWindow }: MemorizeNavbarPorps) {
 
-  const { removeWindow } = useWindowManager();
+  const { findNextAvailableWindow, removeWindow } = useWindowManager();
+  const navigate = useNavigate();
+
+  const nextAvailableWindow = findNextAvailableWindow(currWindow);
+
+  const onRemoveWindow = () => {
+    removeWindow(currWindow);
+    navigate(`/window/${nextAvailableWindow!.windowId+1}/${WindowType[nextAvailableWindow!.windowType]}`);
+  }
 
   return (
     <div className="window-navbar">
       <h1>MEMORIZE</h1>
-      <button className="window-navbar-close-button" onClick={() => removeWindow(currWindow)}>X</button>
+      <button className="window-navbar-close-button" onClick={onRemoveWindow} disabled={currWindow.windowId === nextAvailableWindow?.windowId}>X</button>
     </div>
   );
 }
